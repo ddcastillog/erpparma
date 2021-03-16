@@ -30,6 +30,10 @@ public class ThmEmpleado implements Serializable {
 	@Column(name="horas_trabajadas", nullable=false)
 	private Integer horasTrabajadas;
 
+	//bi-directional many-to-one association to ParmaFactura
+	@OneToMany(mappedBy="thmEmpleado")
+	private List<ParmaFactura> parmaFacturas;
+
 	//bi-directional many-to-one association to SegUsuario
 	@ManyToOne
 	@JoinColumn(name="id_seg_usuario")
@@ -43,10 +47,6 @@ public class ThmEmpleado implements Serializable {
 	//bi-directional many-to-one association to ThmRolCabecera
 	@OneToMany(mappedBy="thmEmpleado")
 	private List<ThmRolCabecera> thmRolCabeceras;
-
-	//bi-directional many-to-one association to ParmaFactura
-	@OneToMany(mappedBy="thmEmpleado")
-	private List<ParmaFactura> parmaFacturas;
 
 	public ThmEmpleado() {
 	}
@@ -81,6 +81,28 @@ public class ThmEmpleado implements Serializable {
 
 	public void setHorasTrabajadas(Integer horasTrabajadas) {
 		this.horasTrabajadas = horasTrabajadas;
+	}
+
+	public List<ParmaFactura> getParmaFacturas() {
+		return this.parmaFacturas;
+	}
+
+	public void setParmaFacturas(List<ParmaFactura> parmaFacturas) {
+		this.parmaFacturas = parmaFacturas;
+	}
+
+	public ParmaFactura addParmaFactura(ParmaFactura parmaFactura) {
+		getParmaFacturas().add(parmaFactura);
+		parmaFactura.setThmEmpleado(this);
+
+		return parmaFactura;
+	}
+
+	public ParmaFactura removeParmaFactura(ParmaFactura parmaFactura) {
+		getParmaFacturas().remove(parmaFactura);
+		parmaFactura.setThmEmpleado(null);
+
+		return parmaFactura;
 	}
 
 	public SegUsuario getSegUsuario() {
@@ -119,28 +141,6 @@ public class ThmEmpleado implements Serializable {
 		thmRolCabecera.setThmEmpleado(null);
 
 		return thmRolCabecera;
-	}
-
-	public List<ParmaFactura> getParmaFacturas() {
-		return this.parmaFacturas;
-	}
-
-	public void setParmaFacturas(List<ParmaFactura> parmaFacturas) {
-		this.parmaFacturas = parmaFacturas;
-	}
-
-	public ParmaFactura addParmaFactura(ParmaFactura parmaFactura) {
-		getParmaFacturas().add(parmaFactura);
-		parmaFactura.setThmEmpleado(this);
-
-		return parmaFactura;
-	}
-
-	public ParmaFactura removeParmaFactura(ParmaFactura parmaFactura) {
-		getParmaFacturas().remove(parmaFactura);
-		parmaFactura.setThmEmpleado(null);
-
-		return parmaFactura;
 	}
 
 }

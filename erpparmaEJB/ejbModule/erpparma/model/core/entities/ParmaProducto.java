@@ -21,9 +21,6 @@ public class ParmaProducto implements Serializable {
 	@Column(name="id_parma_producto", unique=true, nullable=false)
 	private Integer idParmaProducto;
 
-	@Column(name="descuento_producto", nullable=false, precision=4, scale=2)
-	private BigDecimal descuentoProducto;
-
 	@Column(name="iva_producto", nullable=false)
 	private Boolean ivaProducto;
 
@@ -63,14 +60,6 @@ public class ParmaProducto implements Serializable {
 
 	public void setIdParmaProducto(Integer idParmaProducto) {
 		this.idParmaProducto = idParmaProducto;
-	}
-
-	public BigDecimal getDescuentoProducto() {
-		return this.descuentoProducto;
-	}
-
-	public void setDescuentoProducto(BigDecimal descuentoProducto) {
-		this.descuentoProducto = descuentoProducto;
 	}
 
 	public Boolean getIvaProducto() {

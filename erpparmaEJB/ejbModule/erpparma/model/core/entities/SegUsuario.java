@@ -38,14 +38,6 @@ public class SegUsuario implements Serializable {
 	@Column(nullable=false, length=50)
 	private String nombres;
 
-	//bi-directional many-to-one association to SegAsignacion
-	@OneToMany(mappedBy="segUsuario")
-	private List<SegAsignacion> segAsignacions;
-
-	//bi-directional many-to-one association to ThmEmpleado
-	@OneToMany(mappedBy="segUsuario")
-	private List<ThmEmpleado> thmEmpleados;
-
 	//bi-directional many-to-one association to ParmaFactura
 	@OneToMany(mappedBy="segUsuario")
 	private List<ParmaFactura> parmaFacturas;
@@ -53,6 +45,14 @@ public class SegUsuario implements Serializable {
 	//bi-directional many-to-one association to ParmaPedido
 	@OneToMany(mappedBy="segUsuario")
 	private List<ParmaPedido> parmaPedidos;
+
+	//bi-directional many-to-one association to SegAsignacion
+	@OneToMany(mappedBy="segUsuario")
+	private List<SegAsignacion> segAsignacions;
+
+	//bi-directional many-to-one association to ThmEmpleado
+	@OneToMany(mappedBy="segUsuario")
+	private List<ThmEmpleado> thmEmpleados;
 
 	public SegUsuario() {
 	}
@@ -113,50 +113,6 @@ public class SegUsuario implements Serializable {
 		this.nombres = nombres;
 	}
 
-	public List<SegAsignacion> getSegAsignacions() {
-		return this.segAsignacions;
-	}
-
-	public void setSegAsignacions(List<SegAsignacion> segAsignacions) {
-		this.segAsignacions = segAsignacions;
-	}
-
-	public SegAsignacion addSegAsignacion(SegAsignacion segAsignacion) {
-		getSegAsignacions().add(segAsignacion);
-		segAsignacion.setSegUsuario(this);
-
-		return segAsignacion;
-	}
-
-	public SegAsignacion removeSegAsignacion(SegAsignacion segAsignacion) {
-		getSegAsignacions().remove(segAsignacion);
-		segAsignacion.setSegUsuario(null);
-
-		return segAsignacion;
-	}
-
-	public List<ThmEmpleado> getThmEmpleados() {
-		return this.thmEmpleados;
-	}
-
-	public void setThmEmpleados(List<ThmEmpleado> thmEmpleados) {
-		this.thmEmpleados = thmEmpleados;
-	}
-
-	public ThmEmpleado addThmEmpleado(ThmEmpleado thmEmpleado) {
-		getThmEmpleados().add(thmEmpleado);
-		thmEmpleado.setSegUsuario(this);
-
-		return thmEmpleado;
-	}
-
-	public ThmEmpleado removeThmEmpleado(ThmEmpleado thmEmpleado) {
-		getThmEmpleados().remove(thmEmpleado);
-		thmEmpleado.setSegUsuario(null);
-
-		return thmEmpleado;
-	}
-
 	public List<ParmaFactura> getParmaFacturas() {
 		return this.parmaFacturas;
 	}
@@ -199,6 +155,50 @@ public class SegUsuario implements Serializable {
 		parmaPedido.setSegUsuario(null);
 
 		return parmaPedido;
+	}
+
+	public List<SegAsignacion> getSegAsignacions() {
+		return this.segAsignacions;
+	}
+
+	public void setSegAsignacions(List<SegAsignacion> segAsignacions) {
+		this.segAsignacions = segAsignacions;
+	}
+
+	public SegAsignacion addSegAsignacion(SegAsignacion segAsignacion) {
+		getSegAsignacions().add(segAsignacion);
+		segAsignacion.setSegUsuario(this);
+
+		return segAsignacion;
+	}
+
+	public SegAsignacion removeSegAsignacion(SegAsignacion segAsignacion) {
+		getSegAsignacions().remove(segAsignacion);
+		segAsignacion.setSegUsuario(null);
+
+		return segAsignacion;
+	}
+
+	public List<ThmEmpleado> getThmEmpleados() {
+		return this.thmEmpleados;
+	}
+
+	public void setThmEmpleados(List<ThmEmpleado> thmEmpleados) {
+		this.thmEmpleados = thmEmpleados;
+	}
+
+	public ThmEmpleado addThmEmpleado(ThmEmpleado thmEmpleado) {
+		getThmEmpleados().add(thmEmpleado);
+		thmEmpleado.setSegUsuario(this);
+
+		return thmEmpleado;
+	}
+
+	public ThmEmpleado removeThmEmpleado(ThmEmpleado thmEmpleado) {
+		getThmEmpleados().remove(thmEmpleado);
+		thmEmpleado.setSegUsuario(null);
+
+		return thmEmpleado;
 	}
 
 }

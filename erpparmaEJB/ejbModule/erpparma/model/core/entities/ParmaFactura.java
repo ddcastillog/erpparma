@@ -22,9 +22,15 @@ public class ParmaFactura implements Serializable {
 	@Column(name="id_factura", unique=true, nullable=false)
 	private Integer idFactura;
 
+	@Column(nullable=false, precision=7, scale=2)
+	private BigDecimal descuento;
+
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_factura", nullable=false)
 	private Date fechaFactura;
+
+	@Column(nullable=false, precision=7, scale=2)
+	private BigDecimal iva;
 
 	@Column(nullable=false, precision=7, scale=2)
 	private BigDecimal subtotal;
@@ -57,12 +63,28 @@ public class ParmaFactura implements Serializable {
 		this.idFactura = idFactura;
 	}
 
+	public BigDecimal getDescuento() {
+		return this.descuento;
+	}
+
+	public void setDescuento(BigDecimal descuento) {
+		this.descuento = descuento;
+	}
+
 	public Date getFechaFactura() {
 		return this.fechaFactura;
 	}
 
 	public void setFechaFactura(Date fechaFactura) {
 		this.fechaFactura = fechaFactura;
+	}
+
+	public BigDecimal getIva() {
+		return this.iva;
+	}
+
+	public void setIva(BigDecimal iva) {
+		this.iva = iva;
 	}
 
 	public BigDecimal getSubtotal() {

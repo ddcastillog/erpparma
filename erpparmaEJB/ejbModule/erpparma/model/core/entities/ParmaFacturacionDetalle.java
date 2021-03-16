@@ -2,6 +2,7 @@ package erpparma.model.core.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 
 /**
@@ -21,6 +22,9 @@ public class ParmaFacturacionDetalle implements Serializable {
 
 	@Column(nullable=false)
 	private Integer cantidad;
+
+	@Column(nullable=false, precision=7, scale=2)
+	private BigDecimal subtotal;
 
 	//bi-directional many-to-one association to ParmaFactura
 	@ManyToOne
@@ -49,6 +53,14 @@ public class ParmaFacturacionDetalle implements Serializable {
 
 	public void setCantidad(Integer cantidad) {
 		this.cantidad = cantidad;
+	}
+
+	public BigDecimal getSubtotal() {
+		return this.subtotal;
+	}
+
+	public void setSubtotal(BigDecimal subtotal) {
+		this.subtotal = subtotal;
 	}
 
 	public ParmaFactura getParmaFactura() {
