@@ -46,6 +46,14 @@ public class SegUsuario implements Serializable {
 	@OneToMany(mappedBy="segUsuario")
 	private List<ThmEmpleado> thmEmpleados;
 
+	//bi-directional many-to-one association to ParmaFactura
+	@OneToMany(mappedBy="segUsuario")
+	private List<ParmaFactura> parmaFacturas;
+
+	//bi-directional many-to-one association to ParmaPedido
+	@OneToMany(mappedBy="segUsuario")
+	private List<ParmaPedido> parmaPedidos;
+
 	public SegUsuario() {
 	}
 
@@ -147,6 +155,50 @@ public class SegUsuario implements Serializable {
 		thmEmpleado.setSegUsuario(null);
 
 		return thmEmpleado;
+	}
+
+	public List<ParmaFactura> getParmaFacturas() {
+		return this.parmaFacturas;
+	}
+
+	public void setParmaFacturas(List<ParmaFactura> parmaFacturas) {
+		this.parmaFacturas = parmaFacturas;
+	}
+
+	public ParmaFactura addParmaFactura(ParmaFactura parmaFactura) {
+		getParmaFacturas().add(parmaFactura);
+		parmaFactura.setSegUsuario(this);
+
+		return parmaFactura;
+	}
+
+	public ParmaFactura removeParmaFactura(ParmaFactura parmaFactura) {
+		getParmaFacturas().remove(parmaFactura);
+		parmaFactura.setSegUsuario(null);
+
+		return parmaFactura;
+	}
+
+	public List<ParmaPedido> getParmaPedidos() {
+		return this.parmaPedidos;
+	}
+
+	public void setParmaPedidos(List<ParmaPedido> parmaPedidos) {
+		this.parmaPedidos = parmaPedidos;
+	}
+
+	public ParmaPedido addParmaPedido(ParmaPedido parmaPedido) {
+		getParmaPedidos().add(parmaPedido);
+		parmaPedido.setSegUsuario(this);
+
+		return parmaPedido;
+	}
+
+	public ParmaPedido removeParmaPedido(ParmaPedido parmaPedido) {
+		getParmaPedidos().remove(parmaPedido);
+		parmaPedido.setSegUsuario(null);
+
+		return parmaPedido;
 	}
 
 }

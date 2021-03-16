@@ -20,7 +20,7 @@ public class AudBitacora implements Serializable {
 	@Column(name="id_aud_bitacora", unique=true, nullable=false)
 	private Integer idAudBitacora;
 
-	@Column(name="descripcion_evento", nullable=false, length=300)
+	@Column(name="descripcion_evento", nullable=false, length=100)
 	private String descripcionEvento;
 
 	@Column(name="direccion_ip", nullable=false, length=100)

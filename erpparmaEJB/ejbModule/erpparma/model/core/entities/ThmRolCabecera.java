@@ -47,7 +47,7 @@ public class ThmRolCabecera implements Serializable {
 
 	//bi-directional many-to-one association to ThmEmpleado
 	@ManyToOne
-	@JoinColumn(name="id_thm_empleado", nullable=false)
+	@JoinColumn(name="id_thm_empleado")
 	private ThmEmpleado thmEmpleado;
 
 	//bi-directional many-to-one association to ThmRolDetalle

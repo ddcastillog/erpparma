@@ -34,7 +34,7 @@ public class ThmRolDetalle implements Serializable {
 
 	//bi-directional many-to-one association to ThmRolCabecera
 	@ManyToOne
-	@JoinColumn(name="id_thm_rol_cabecera", nullable=false)
+	@JoinColumn(name="id_thm_rol_cabecera")
 	private ThmRolCabecera thmRolCabecera;
 
 	public ThmRolDetalle() {

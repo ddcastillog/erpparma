@@ -3,6 +3,14 @@
 	<persistence-unit name="ddcastillogDS" transaction-type="JTA">
 		<jta-data-source>java:/ddcastillogDS</jta-data-source>
 		<class>erpparma.model.core.entities.AudBitacora</class>
+		<class>erpparma.model.core.entities.ParmaAjuste</class>
+		<class>erpparma.model.core.entities.ParmaDetallePedido</class>
+		<class>erpparma.model.core.entities.ParmaFactura</class>
+		<class>erpparma.model.core.entities.ParmaFacturacionDetalle</class>
+		<class>erpparma.model.core.entities.ParmaInventario</class>
+		<class>erpparma.model.core.entities.ParmaPedido</class>
+		<class>erpparma.model.core.entities.ParmaProducto</class>
+		<class>erpparma.model.core.entities.ParmaTipoProducto</class>
 		<class>erpparma.model.core.entities.SegAsignacion</class>
 		<class>erpparma.model.core.entities.SegModulo</class>
 		<class>erpparma.model.core.entities.SegUsuario</class>
