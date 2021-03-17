@@ -1,46 +1,90 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">  
-
-
-  	
-  	<f:metadata>
-	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
-		type="preRenderView"></f:event>
-     </f:metadata>
-     
-
-<h:head></h:head> 
-<body> 
-
-<h:form>
-
-<p:panel header="Datos de los productos">
-
-<p:dataGrid>
-
-</p:dataGrid >
-
-<p:panel header="Producto">
-
-<h:panelGrid columns="2" >
-
-
-
-</h:panelGrid>
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
 
 
 
 
-</p:panel>
+<h:head></h:head>
+<body>
 
-</p:panel>
+	<h:form>
+
+		<p:panel header="Datos de los productos">
+
+			<p:dataGrid value="#{beanCarrito.listaproductos}" var="listado">
+
+				<p:panel header="producto">
+
+					<h:panelGrid columns="2">
+
+						<h:outputText value="Codigo" />
+						<h:outputText value="#{listado.codigo}" />
+
+						<h:outputText value="Nombre" />
+						<h:outputText value="#{listado.nombre}" />
+
+						<h:outputText value="Precio" />
+						<h:outputText value="#{listado.precio}" />
+
+						<p:commandButton value="Agregar" update="@form"
+							icon="fa fa-cart-plus"
+							actionListener="#{beanCarrito.actionListenerAgregarCarrito(listado)}"></p:commandButton>
+
+					</h:panelGrid>
+
+				</p:panel>
+
+			</p:dataGrid>
 
 
-</h:form>
+			<p:dataTable value="#{beanCarrito.carrito}" var="c">
 
-</body> 
+				<p:column headerText="Codigo">
+					<h:outputText value="#{c.codigo}" />
+				</p:column>
+
+				<p:column headerText="Nombre">
+					<h:outputText value="#{c.nombre}" />
+					<f:facet name="footer">
+					<h:outputText value="Suma Total" />
+					</f:facet>
+				</p:column>
+
+				<p:column headerText="Precio">
+					<h:outputText value="#{c.precio}" />
+
+					<f:facet name="footer">
+
+						<h:outputText value="#{beanCarrito.totalcarrito}">
+
+
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+
+						</h:outputText>
+
+
+					</f:facet>
+
+				</p:column>
+
+				<p:column>
+
+					<p:commandButton value="Eliminar producto" update="@form"
+						icon="fa fa-close"
+						actionListener="#{beanCarrito.actionListenereliminarCarrito(c)}">
+					</p:commandButton>
+
+				</p:column>
+
+			</p:dataTable>
+
+		</p:panel>
+
+	</h:form>
+
+</body>
 </html>

@@ -22,17 +22,80 @@ public class BeanCarrito implements Serializable {
 	
 	private List<DTOProducto> listaproductos;
 	
+	private List<DTOProducto> carrito;
+	
+	private double totalcarrito;
+	
 	@PostConstruct
 	
 	public void inicializar ()  {
 		
-		mClientes.generardatosProductos();
+		listaproductos = mClientes.generardatosProductos();
 	}
 	
 	
+	public void actionListenerAgregarCarrito (DTOProducto producto) {
+		
+		carrito = mClientes.agregardatosCarrito(carrito, producto);
+		
+		totalcarrito = mClientes.CalcularTotal(carrito);
+		
+	}
+	
+	
+public void actionListenereliminarCarrito (DTOProducto producto) {
+		
+		carrito = mClientes.eliminardatosCarrito(carrito, producto.getCodigo());
+		
+
+		totalcarrito = mClientes.CalcularTotal(carrito);
+		
+	}
+
+
+
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+
+	public double getTotalcarrito() {
+	return totalcarrito;
+}
+
+
+public void setTotalcarrito(double totalcarrito) {
+	this.totalcarrito = totalcarrito;
+}
+
+
+	public List<DTOProducto> getCarrito() {
+		return carrito;
+	}
+
+
+
+
+
+
+
+
+	public void setCarrito(List<DTOProducto> carrito) {
+		this.carrito = carrito;
+	}
+
+
+
+
+
+
+
 
 	public ManagerClientes getmClientes() {
 		return mClientes;
@@ -63,6 +126,18 @@ public class BeanCarrito implements Serializable {
 
 	public void setListaproductos(List<DTOProducto> listaproductos) {
 		this.listaproductos = listaproductos;
+	}
+	
+	
+	
+
+
+
+
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 
