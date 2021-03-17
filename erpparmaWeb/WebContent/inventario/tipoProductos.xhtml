@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
+		type="preRenderView"></f:event>
+</f:metadata>
+<h:head>
+	<title>Tipo Productos</title>
+</h:head>
+<body>
+	<h:form id="form1">
+		<p:menubar>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<f:facet name="options">
+				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
+					icon="pi pi-user">
+					<p:menuitem value="Perfil" icon="pi pi-cog"></p:menuitem>
+					<p:menuitem value="cerrar sesión"
+						action="#{beanSegLogin.actionCerrarSesion()}"
+						icon="pi pi-sign-out"></p:menuitem>
+				</p:menuButton>
+			</f:facet>
+		</p:menubar>
+	</h:form>
+	<h:form id="form2">
+		<p:messages>
+			<p:autoUpdate></p:autoUpdate>
+		</p:messages>
+		<p:panel header="Reguistro de Tipo Productos" toggleable="true"
+			collapsed="true">
+			<p:panelGrid columns="2">
+				<h:outputText value="Nombre" />
+				<p:inputText
+					value="#{beanParmaTipoProducto.newtTipoProducto.nombreTipoProducto}"></p:inputText>				
+				<p:commandButton value="Insertar" icon="pi pi-save"
+					actionListener="#{beanParmaTipoProducto.actionInsertarTipoProducto()}"
+					update="@form,:form3"></p:commandButton>
+			</p:panelGrid>
+		</p:panel>
+	</h:form>
+	<h:form id="form3">
+		<p:panel>
+			<p:dataTable value="#{beanParmaTipoProducto.listaTipoProductos}"
+				var="t" emptyMessage="No hay registros ">
+				<p:column headerText="ID">
+					<h:outputText value="#{t.idParmaTipoProducto}" />
+				</p:column>
+				<p:column headerText="Nombre">
+					<h:outputText value="#{t.nombreTipoProducto}" />
+				</p:column>				
+				<p:column headerText="OPCIONES">
+					<p:commandButton title="editar" icon="pi pi-pencil"
+						actionListener="#{beanParmaTipoProducto.seteditTipoProducto(t)}"
+						update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
+					</p:commandButton>
+					<p:commandButton title="eliminar" icon="pi pi-times-circle"
+						actionListener="#{beanParmaTipoProducto.actionlisternerEliminarTipoProducto(t.idParmaTipoProducto)}"
+						update="@form,:form3">
+						<p:confirm header="Confirmación" message="Desea eliminar"
+							icon="pi pi-exclamation-triangle"></p:confirm>
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</h:form>
+	<p:dialog header="Editar informacion" widgetVar="dlgEdicion"
+		modal="true">
+		<h:form id="formEdicion">
+			<p:messages>
+				<p:autoUpdate></p:autoUpdate>
+			</p:messages>
+			<h:panelGrid columns="2">
+				<h:outputText value="ID:" />
+				<h:outputText
+					value="#{beanParmaTipoProducto.editTipoProducto.idParmaTipoProducto}" />
+				<h:outputText value="Nombre" />
+				<p:inputText
+					value="#{beanParmaTipoProducto.editTipoProducto.nombreTipoProducto}"></p:inputText>				
+				<p:commandButton value="Actualizar" icon="fa fa-save"
+					actionListener="#{beanParmaTipoProducto.actionActualizarTipoProductos()}"
+					update="@form,:form3"></p:commandButton>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		<p:commandButton value="SI" type="button"
+			styleClass="ui-confirmdialog-yes" icon="pi pi-check"></p:commandButton>
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no" icon="pi pi-times"></p:commandButton>
+	</p:confirmDialog>
+</body>
+</html>

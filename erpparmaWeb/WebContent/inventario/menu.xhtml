@@ -13,7 +13,8 @@
 	<h:form>
 		<p:menubar>
 			<p:menuitem value="Regresar" icon="pi pi-home" action="/menu" />
-			<p:menuitem value="Productos" icon="pi pi-briefcase" />
+			<p:menuitem value="Productos" icon="pi pi-briefcase" action="#{beanParmaProducto.actionCargarMenuProductos()}"/>
+			<p:menuitem value="Tipo Producto" icon="pi pi-briefcase" action="#{beanParmaTipoProducto.actionCargarMenuTipoProducto()}"/>
 			<p:menuitem value="Ingresos" icon="pi pi-step-forward" />
 			<p:menuitem value="Egressos" icon="pi pi-step-backward" />
 			<f:facet name="options">
