@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
+		type="preRenderView"></f:event>
+</f:metadata>
+<h:head>
+	<title>Ajustes</title>
+</h:head>
+<body>
+	<h:form id="form1">
+		<p:menubar>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<f:facet name="options">
+				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
+					icon="pi pi-user">
+					<p:menuitem value="Perfil" icon="pi pi-cog"></p:menuitem>
+					<p:menuitem value="cerrar sesión"
+						action="#{beanSegLogin.actionCerrarSesion()}"
+						icon="pi pi-sign-out"></p:menuitem>
+				</p:menuButton>
+			</f:facet>
+		</p:menubar>
+	</h:form>
+	<h:form id="form2">
+		<p:messages>
+			<p:autoUpdate></p:autoUpdate>
+		</p:messages>
+		<p:panel header="Reguistro de Ajustes" toggleable="true"
+			collapsed="true">
+			<p:panelGrid columns="2">
+				<p:outputLabel for="@next" value="Producto" />
+				<p:autoComplete id="producto"
+					value="#{beanParmaAjustes.nombreProducto}" forceSelection="true"
+					completeMethod="#{beanParmaAjustes.completeText}" required="true"
+					scrollHeight="250" />
+				<h:outputText value="Cantidad" />
+				<p:inputNumber value="#{beanParmaAjustes.newtAjuste.cantidadAjuste}"
+					minValue="0"></p:inputNumber>
+				<h:outputText value="Ingreso/Egreso" />
+				<p:selectBooleanCheckbox
+					value="#{beanParmaAjustes.newtAjuste.tipoAjuste}"></p:selectBooleanCheckbox>
+				<p:commandButton value="Insertar" icon="pi pi-save"
+					actionListener="#{beanParmaAjustes.actionInsertarAjustes()}"
+					update="@form,:form3"></p:commandButton>
+			</p:panelGrid>
+		</p:panel>
+	</h:form>
+	<h:form id="form3">
+		<p:panel>
+			<p:dataTable value="#{beanParmaAjustes.listaAjustes}" var="a"
+				emptyMessage="No hay registros ">
+				<p:column headerText="ID">
+					<h:outputText value="#{a.idParmaAjuste}" />
+				</p:column>
+				<p:column headerText="Producto">
+					<h:outputText value="#{a.parmaProducto.nombreProducto}" />
+				</p:column>
+				<p:column headerText="Tipo de Producto">
+					<h:outputText
+						value="#{i.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
+				</p:column>
+				<p:column headerText="Cantidad">
+					<h:outputText value="#{a.cantidadAjuste}" />
+				</p:column>
+				<p:column headerText="Ingreso/Egreso">
+					<h:outputText value="#{a.tipoAjuste}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</h:form>
+</body>
+</html>

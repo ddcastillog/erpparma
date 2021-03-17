@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
+		type="preRenderView"></f:event>
+</f:metadata>
+<h:head>
+	<title>Inventario</title>
+</h:head>
+<body>
+	<h:form id="form1">
+		<p:menubar>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<f:facet name="options">
+				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
+					icon="pi pi-user">
+					<p:menuitem value="Perfil" icon="pi pi-cog"></p:menuitem>
+					<p:menuitem value="cerrar sesión"
+						action="#{beanSegLogin.actionCerrarSesion()}"
+						icon="pi pi-sign-out"></p:menuitem>
+				</p:menuButton>
+			</f:facet>
+		</p:menubar>
+	</h:form>
+	
+	<h:form id="form3">
+		<p:panel>
+			<p:dataTable value="#{beanParmaInventario.listaInventarios}"
+				var="i" emptyMessage="No hay registros ">
+				<p:column headerText="ID">
+					<h:outputText value="#{i.idInventario}" />
+				</p:column>
+				<p:column headerText="Producto">
+					<h:outputText value="#{i.parmaProducto.nombreProducto}" />
+				</p:column>
+				<p:column headerText="Tipo de Producto">
+					<h:outputText
+						value="#{i.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
+				</p:column>
+				<p:column headerText="Cantidad">
+					<h:outputText value="#{i.cantidad}" />					
+				</p:column>						
+			</p:dataTable>
+		</p:panel>
+	</h:form>
+</body>
+</html>
