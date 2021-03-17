@@ -6,6 +6,8 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import erpparma.model.core.entities.ParmaAjuste;
+import erpparma.model.core.entities.ParmaInventario;
 import erpparma.model.core.entities.ParmaProducto;
 import erpparma.model.core.entities.ParmaTipoProducto;
 import erpparma.model.core.entities.ThmEmpleado;
@@ -60,5 +62,35 @@ public class ManagerInventario {
     public void eliminarParmaTipoProducto(Integer idParmaTipoProducto) throws Exception{
     	mDAO.eliminar(ParmaTipoProducto.class, idParmaTipoProducto);
     }
+  //Tipo de producto
+    public List<ParmaAjuste> findAllParmaAjuste(){
+    	return mDAO.findAll(ParmaAjuste.class);
+    }
+  //Tipo de producto
+    public void insertarParmaAjuste(ParmaAjuste ajuste) throws Exception{
+    List<ParmaInventario> inventario= mDAO.findWhere(ParmaAjuste.class,
+    		"o.parmaProducto='"+ajuste.getParmaProducto().getIdParmaProducto()+"'", null);
+    try {
+		ParmaInventario inve=inventario.get(0);
+		if(ajuste.getTipoAjuste()) {
+			int cantidad= inve.getCantidad().intValue()+ajuste.getCantidadAjuste().intValue();
+			inve.setCantidad(cantidad);
+		}else {
+			int cantidad= inve.getCantidad().intValue()-ajuste.getCantidadAjuste().intValue();
+			inve.setCantidad(cantidad);
+		}
+		mDAO.actualizar(inve);
+		mDAO.insertar(ajuste);
+		
+	} catch (Exception e) {
+		ParmaInventario newinve= new ParmaInventario();
+	    newinve.setParmaProducto(ajuste.getParmaProducto());
+	    newinve.setCantidad(ajuste.getCantidadAjuste().intValue());
+	    mDAO.insertar(newinve);
+	    mDAO.insertar(ajuste);
+	}
+    }
+    
+    
 
 }
