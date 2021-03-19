@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<h:outputStylesheet library="css" name="primeflex.min.css"
+		target="head" />
+	<h:outputStylesheet library="css" name="facturacion.css" target="head" />
+</h:head>
+<body>
+
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="/menu" />
+			<p:menuitem value="Clientes" icon="pi pi-users" />
+			<p:menuitem value="Facturar" icon="pi pi-angle-double-up" />
+			<p:menuitem value="Crear cliente" icon="pi pi-angle-double-up" />
+			<p:menuitem value="Buscar cliente" icon="pi pi-angle-double-up" />
+			<f:facet name="options">
+				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
+					icon="pi pi-user">
+					<p:menuitem value="Perfil" icon="pi pi-cog"></p:menuitem>
+					<p:menuitem value="Cerrar sesión" icon="pi pi-sign-out"
+						action="#{beanSegLogin.actionCerrarSesion()}"></p:menuitem>
+				</p:menuButton>
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<div class="card">
+		<div class="ui-g">
+			<div class="ui-g-10">
+				<div class="p-d-flex">
+					<p:panel header="FACTURACIÓN PARAMA ERP">
+						<h:form>
+							<h:panelGrid columns="6" cellpadding="5">
+								<h:outputLabel for="cliente" value="Cliente" />
+								<h:outputLabel for="name"
+									value="#{beanFacturacion.clienteSelected}" />
+								<p:outputLabel for="@next" value="Fecha" />
+								<p:inputText id="extended2" readonly="true" value="2020-02-10"
+									required="true" />
+								<p:outputLabel for="@next" value="Vendedor" />
+								<p:inputText id="extended" readonly="true"
+									value="Kevin Catucuamba" required="true" />
+								<p:outputLabel for="@next" value="Producto" />
+								<p:autoComplete id="producto" value="#{beanFacturar.txtLike}"
+									forceSelection="true"
+									completeMethod="#{beanFacturar.completeText}" required="true"
+									scrollHeight="250" />
+								<p:commandButton
+									actionListener="#{beanFacturar.actionAgregarCarro()}"
+									value="Agregar" update="@form, :carro, :subtotal"
+									styleClass="p-mt-3" />
+								<p:commandButton
+									actionListener="#{beanFacturar.actionAgregarCarro()}"
+									value="Crear Factura" update="@form, :carro, :subtotal"
+									styleClass="p-mt-3" />
+
+							</h:panelGrid>
+
+						</h:form>
+					</p:panel>
+					<p:panel styleClass="p-mx-1" header="CALCULAR CAMBIO">
+						<h:form>
+							<h:panelGrid columns="2" cellpadding="8">
+								<p:inputText />
+								<p:commandButton
+									actionListener="#{beanFacturar.actionAgregarCarro()}"
+									value="Calcular" update="@form, :carro, :subtotal"
+									styleClass="p-mt-3" />
+								<h:outputText styleClass="letter" value="$ 0.00" />
+							</h:panelGrid>
+
+						</h:form>
+					</p:panel>
+				</div>
+			</div>
+
+			<div class="ui-g-2 p-d-flex p-jc-end p-ai-end">
+				<h:form id="subtotal">
+					<p:panelGrid columns="2">
+						<h:outputText value="Subtotal:" />
+						<h:outputText value="$ #{beanFacturar.factura.subtotal}" />
+
+						<h:outputText value="DESC (0%):" />
+						<h:outputText value="$ 0.00" />
+
+						<h:outputText value="IVA (12%):" />
+						<h:outputText value="$ 0.00" />
+
+						<h:outputText styleClass="letter" value="Total a pagar:" />
+						<h:outputText styleClass="letter" value="$ 48.44" />
+					</p:panelGrid>
+				</h:form>
+			</div>
+
+		</div>
+	</div>
+
+	<h:form id="carro">
+		<p:dataTable styleClass="margin" scrollable="true" scrollHeight="260"
+			size="small" value="#{beanFacturar.items}" var="i"
+			emptyMessage="No hay registros aún." rowIndexVar="index"
+			showGridlines="true">
+			<f:facet name="header">
+                Productos a llevar
+            </f:facet>
+			<p:column headerText="#">
+				<h:outputText value="#{index + 1}" />
+			</p:column>
+			<p:column headerText="Producto">
+				<h:outputText value="#{i.parmaProducto.nombreProducto}" />
+			</p:column>
+			<p:column headerText="Precio">
+				<h:outputText value="$ #{i.parmaProducto.precioProducto}" />
+			</p:column>
+			<p:column headerText="Cantidad">
+				<p:spinner id="basic" value="#{i.cantidad}"
+					valueChangeListener="#{beanFacturar.updateCantidad}">
+					<p:ajax event="change"
+						listener="#{beanFacturar.refreshCantidad(index)}"
+						update="@form, :subtotal" />
+				</p:spinner>
+
+			</p:column>
+			<p:column headerText="Subtotal">
+				<h:outputText value="$ #{i.subtotal}" />
+			</p:column>
+			<p:column headerText="OPCIONES">
+				<p:commandButton icon="pi pi-pencil"
+					actionListener="#{beanFacturar.deleteProducto(index)}"
+					update="@form, :subtotal" title="editar" />
+			</p:column>
+
+
+
+			<f:facet name="footer">
+				<span class="p-text-bold">In total there are products.</span>
+			</f:facet>
+		</p:dataTable>
+
+	</h:form>
+
+
+</body>
+</html>
