@@ -33,7 +33,7 @@ public class ManagerClientes {
     	producto.add(new DTOProducto(3, "Pan Cortado", 0.15));
     	producto.add(new DTOProducto(4, "Pan Cortado", 0.15));
     	producto.add(new DTOProducto(5, "Pan Cortado", 0.15));
-    	producto.add(new DTOProducto(6, "Pan Cortado", 0.15));
+    	
     	
     	return producto;
     	
