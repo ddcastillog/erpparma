@@ -4,13 +4,27 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
-<h:head></h:head>
+<f:metadata>
+	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
+		type="preRenderView"></f:event>
+</f:metadata>
+<h:head>
+	<h:outputStylesheet library="css" name="primeflex.min.css"
+		target="head" />
+	<h:outputStylesheet library="css" name="facturacion.css" target="head" />
+</h:head>
 <body>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
 	<h:form>
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="/menu" />
-			<p:menuitem value="Clientes" icon="pi pi-users" />
-			<p:menuitem value="Facturar" icon="pi pi-angle-double-up" />
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="menu?faces-redirect=true" />
+			<p:menuitem actionListener="#{beanFacturacion.openNewCliente()}"
+				value="Crear cliente" icon="pi pi-user-plus"
+				oncomplete="PF('manageProductDialog').show()"
+				update=":formnuevo,:dlg1" />
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -20,7 +34,7 @@
 				</p:menuButton>
 			</f:facet>
 		</p:menubar>
-		<p:staticMessage severity="info" summary="Módulo de auditoría"></p:staticMessage>
+		<p:staticMessage severity="info" summary="Clientes"></p:staticMessage>
 	</h:form>
 
 	<h:form id="formDatos">
@@ -36,10 +50,58 @@
 				<h:outputText value="#{c.correo}" />
 			</p:column>
 			<p:column headerText="OPCIONES">
-				<p:commandButton icon="pi pi-pencil" action="#{beanFacturacion.actionChangeCliente(c)}" title="editar" />
+				<p:commandButton icon="pi pi-id-card"
+					action="#{beanFacturacion.actionChangeCliente(c, 'facturar')}"
+					title="Crear Factura" />
+				<p:commandButton icon="pi pi-eye"
+					action="#{beanFacturacion.actionChangeCliente(c, 'detalle')}"
+					title="Ver Cliente" />
 			</p:column>
 		</p:dataTable>
 	</h:form>
+	<p:dialog id="dlg1" header="Nuevo Cliente" width="600"
+		showEffect="fade" modal="true" widgetVar="manageProductDialog"
+		responsive="true">
+		<h:form id="formnuevo">
+			<p:messages>
+				<p:autoUpdate />
+			</p:messages>
+			<p:outputPanel class="ui-fluid">
+				<p:outputPanel>
+					<p:graphicImage />
+					<div class="p-field">
+						<p:outputLabel for="codigo">Código</p:outputLabel>
+						<p:inputText id="codigo" required="true"
+							placeholder="Inserte la cédula"
+							value="#{beanFacturacion.segUsuario.codigo}">
+						</p:inputText>
+					</div>
+					<div class="p-field">
+						<p:outputLabel for="nombre">Nombre</p:outputLabel>
+						<p:inputText id="nombre" required="true"
+							placeholder="Inserte el nombre"
+							value="#{beanFacturacion.segUsuario.nombres}" />
+					</div>
 
+					<div class="p-field">
+						<p:outputLabel for="apellido">Apellido</p:outputLabel>
+						<p:inputText id="apellido" required="true"
+							placeholder="Inserte el apellido"
+							value="#{beanFacturacion.segUsuario.apellidos}" />
+					</div>
+
+					<div class="p-field">
+						<p:outputLabel for="correo">Correo</p:outputLabel>
+						<p:inputText id="correo" required="true"
+							placeholder="Inserte el correo"
+							value="#{beanFacturacion.segUsuario.correo}" />
+					</div>
+				</p:outputPanel>
+			</p:outputPanel>
+			<p:commandButton id="saver" value="Save" icon="pi pi-check"
+				actionListener="#{beanFacturacion.crearCliente()}"
+				update="@this, @form, :formDatos" />
+		</h:form>
+	</p:dialog>
 </body>
 </html>

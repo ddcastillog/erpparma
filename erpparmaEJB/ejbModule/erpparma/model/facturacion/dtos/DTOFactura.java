@@ -1,7 +1,11 @@
 package erpparma.model.facturacion.dtos;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import erpparma.model.core.entities.ParmaFacturacionDetalle;
 
 public class DTOFactura {
 	private Integer idFactura;
@@ -10,10 +14,10 @@ public class DTOFactura {
 	private BigDecimal total;
 	private BigDecimal iva;
 	private BigDecimal descuento;
-	
-	
+	private List<ParmaFacturacionDetalle> items;
+
 	public DTOFactura() {
-		
+
 	}
 
 	public DTOFactura(Integer idFactura, Date fechaFactura, BigDecimal subtotal, BigDecimal total, BigDecimal iva,
@@ -24,6 +28,7 @@ public class DTOFactura {
 		this.total = total;
 		this.iva = iva;
 		this.descuento = descuento;
+		this.items = new ArrayList<ParmaFacturacionDetalle>();
 	}
 
 	public Integer getIdFactura() {
@@ -68,6 +73,14 @@ public class DTOFactura {
 
 	public BigDecimal getDescuento() {
 		return descuento;
+	}
+
+	public List<ParmaFacturacionDetalle> getItems() {
+		return items;
+	}
+
+	public void setItems(List<ParmaFacturacionDetalle> items) {
+		this.items = items;
 	}
 
 	public void setDescuento(BigDecimal descuento) {

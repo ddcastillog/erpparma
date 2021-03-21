@@ -5,6 +5,7 @@ import java.util.List;
 
 public class DTOClientes {
 
+	private Integer id;
 	private String codigo;
 	private String apellidos;
 	private String nombres;
@@ -12,7 +13,8 @@ public class DTOClientes {
 	private Boolean activo;
 	List<DTOFactura> facturas;
 
-	public DTOClientes(String codigo, String apellidos, String nombres, String correo, Boolean activo) {
+	public DTOClientes(Integer id, String codigo, String apellidos, String nombres, String correo, Boolean activo) {
+		this.id = id;
 		this.codigo = codigo;
 		this.apellidos = apellidos;
 		this.nombres = nombres;
@@ -67,6 +69,14 @@ public class DTOClientes {
 
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	@Override
