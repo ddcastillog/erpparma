@@ -1,6 +1,9 @@
 package erpparma.model.facturacion.managers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -107,6 +110,7 @@ public class ManagerFacturacion {
 
 	@SuppressWarnings("unchecked")
 	public void crearFactura(ParmaFactura factura, DTOClientes cliente, Integer idCajero) throws Exception {
+		factura.setFechaFactura(new Date());
 		SegUsuario clienteFinal = (SegUsuario) this.mDao.findById(SegUsuario.class, cliente.getId());
 		factura.setSegUsuario(clienteFinal);
 		String whereCajero = "segUsuario.idSegUsuario = '" + idCajero.toString() + "'";
@@ -134,12 +138,49 @@ public class ManagerFacturacion {
 		String field = "nombreProducto";
 		String where = "o.".concat(field).concat("=").concat("'").concat(name).concat("'");
 		List<ParmaProducto> p = this.mDao.findWhere(ParmaProducto.class, where, "nombreProducto");
-
 		if (p.get(0).getParmaTipoProducto().getNombreTipoProducto().equals("venta")) {
-			System.out.println("Tamaño: " + p.get(0).getParmaTipoProducto().getNombreTipoProducto());
 			return p.get(0);
 		}
 		return null;
+	}
+
+	// Metodos que ayudan al calculo de valores de la factura
+
+	public void initFacturaValues(ParmaFactura factura) {
+		factura.setSubtotal(UtilFacturacion.getNewBigDecimal("0", 2));
+		factura.setDescuento(UtilFacturacion.getNewBigDecimal("0", 2));
+		factura.setIva(UtilFacturacion.getNewBigDecimal("0", 2));
+		factura.setTotal(UtilFacturacion.getNewBigDecimal("0", 2));
+	}
+
+	public void calculateFacturaValues(ParmaFactura factura) {
+		this.initFacturaValues(factura);
+		BigDecimal subtotal = UtilFacturacion.calculateGlobalSubtotal(factura.getParmaFacturacionDetalles());
+		BigDecimal total = subtotal;
+		if (subtotal.doubleValue() >= UtilFacturacion.MINIMO_PARA_FACTURAR_PARMA) {
+			BigDecimal descuento = UtilFacturacion.calculateDescuento(subtotal);
+			factura.setDescuento(descuento);
+			total = UtilFacturacion.calculateDifference(subtotal, descuento);
+			BigDecimal iva = UtilFacturacion.calculateIVA(total);
+			factura.setIva(iva);
+			total = UtilFacturacion.calculateAdd(total, iva);
+		}
+
+		factura.setSubtotal(subtotal);
+		factura.setTotal(total);
+	}
+
+	public ParmaFacturacionDetalle initItemFacturaValuesNew(ParmaProducto p) {
+		ParmaFacturacionDetalle det = new ParmaFacturacionDetalle();
+		det.setParmaProducto(p);
+		det.setCantidad(1);
+		det.setSubtotal(p.getPrecioProducto());
+		return det;
+	}
+
+	public void updteSubtotalItemFactura(ParmaFacturacionDetalle det, Integer cantidad) {
+		Double subtotal = det.getParmaProducto().getPrecioProducto().doubleValue() * cantidad;
+		det.setSubtotal(UtilFacturacion.getNewBigDecimal(subtotal.toString(), 2));
 	}
 
 }
