@@ -1,8 +1,10 @@
 package erpparma.model.inventario.managers;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -104,7 +106,7 @@ public class ManagerInventario {
 			} else {
 				int cantidad = inve.getCantidad().intValue() - ajuste.getCantidadAjuste().intValue();
 				if (cantidad >= 0) {
-					inve.setCantidad(cantidad);					
+					inve.setCantidad(cantidad);
 					mDAO.actualizar(inve);
 					mDAO.insertar(ajuste);
 				} else {
@@ -142,12 +144,25 @@ public class ManagerInventario {
 
 	public void activodesactivoProducto(Integer idInventario) throws Exception {
 		ParmaInventario updateinve = (ParmaInventario) mDAO.findById(ParmaInventario.class, idInventario);
-		if(updateinve.getActivo()) {
+		if (updateinve.getActivo()) {
 			updateinve.setActivo(false);
-		}else {
+		} else {
 			updateinve.setActivo(true);
 		}
 		mDAO.actualizar(updateinve);
+	}
+
+	public List<ParmaInventario> mayorcantodadInventario() {		
+		List<ParmaInventario> inven = mDAO.findAll(ParmaInventario.class, "cantidad");
+		List<ParmaInventario> cantidades = new ArrayList<ParmaInventario>();
+		int aux = 0;
+		for (int i = inven.size()-1; i>=0; i--) {
+			if (aux < 3) {
+				cantidades.add(inven.get(i));
+				aux++;
+			}
+		}
+		return cantidades;
 	}
 
 }

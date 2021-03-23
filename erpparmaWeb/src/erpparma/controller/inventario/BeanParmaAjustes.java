@@ -14,6 +14,10 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.pie.PieChartDataSet;
+import org.primefaces.model.charts.pie.PieChartModel;
+
 import erpparma.controller.JSFUtil;
 import erpparma.model.auditoria.managers.ManagerAuditoria;
 import erpparma.model.core.entities.AudBitacora;
@@ -32,6 +36,8 @@ public class BeanParmaAjustes implements Serializable {
 	private List<ParmaProducto> listaProductos;
 	private ParmaAjuste newtAjuste;
 	private String nombreProducto;
+	
+	
 
 	public BeanParmaAjustes() {
 
@@ -39,8 +45,9 @@ public class BeanParmaAjustes implements Serializable {
 
 	@PostConstruct
 	public void inicializacion() {
-		newtAjuste = new ParmaAjuste();
+		newtAjuste = new ParmaAjuste();		
 	}
+	
 
 	public String actionCargarMenuAjustes() {
 		listaAjustes = mInventario.findAllParmaAjuste();		

@@ -2,6 +2,8 @@ package erpparma.controller.seguridades;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -9,8 +11,17 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.pie.PieChartDataSet;
+import org.primefaces.model.charts.pie.PieChartModel;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 import erpparma.controller.JSFUtil;
+import erpparma.controller.inventario.BeanParmaAjustes;
+import erpparma.model.core.entities.ParmaInventario;
 import erpparma.model.core.entities.SegModulo;
+import erpparma.model.inventario.managers.ManagerInventario;
 import erpparma.model.seguridades.dtos.LoginDTO;
 import erpparma.model.seguridades.managers.ManagerSeguridades;
 
@@ -22,6 +33,10 @@ public class BeanSegLogin implements Serializable {
 	private LoginDTO loginDTO;
 	@EJB
 	private ManagerSeguridades mSeguridades;
+	private PieChartModel pieModel;
+	@EJB
+	private ManagerInventario mInventario;
+	
 	
 	
 	public BeanSegLogin() {
@@ -40,6 +55,9 @@ public class BeanSegLogin implements Serializable {
 	}
 	
 	public String actionMenu(String ruta) {
+		if(ruta.equals("inventario/menu")) {
+			createPieModel();
+		}
 		return ruta+"?faces-redirect=true";
 	}
 	
@@ -122,6 +140,41 @@ public class BeanSegLogin implements Serializable {
 
 	public void setLoginDTO(LoginDTO loginDTO) {
 		this.loginDTO = loginDTO;
+	}	
+	private  void createPieModel() {
+        pieModel = new PieChartModel();
+        ChartData data = new ChartData();
+
+        PieChartDataSet dataSet = new PieChartDataSet();
+        List<ParmaInventario> cantidades=mInventario.mayorcantodadInventario();
+        List<Number> values = new ArrayList<>();
+        for (int i = 0; i < cantidades.size(); i++) {
+			values.add(cantidades.get(i).getCantidad());
+		}        
+        dataSet.setData(values);
+
+        List<String> bgColors = new ArrayList<>();
+        bgColors.add("rgb(255, 99, 132)");
+        bgColors.add("rgb(54, 162, 235)");
+        bgColors.add("rgb(255, 205, 86)");
+        dataSet.setBackgroundColor(bgColors);
+
+        data.addChartDataSet(dataSet);
+        List<String> labels = new ArrayList<>();
+        for (int i = 0; i < cantidades.size(); i++) {
+        	labels.add(cantidades.get(i).getParmaProducto().getNombreProducto());
+		}  
+        data.setLabels(labels);
+
+        pieModel.setData(data);
+    }
+
+	public PieChartModel getPieModel() {
+		return pieModel;
 	}
 
+	public void setPieModel(PieChartModel pieModel) {
+		this.pieModel = pieModel;
+	}
+	
 }
