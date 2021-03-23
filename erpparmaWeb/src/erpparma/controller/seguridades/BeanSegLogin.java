@@ -11,6 +11,7 @@ import javax.inject.Named;
 
 import erpparma.controller.JSFUtil;
 import erpparma.model.core.entities.SegModulo;
+import erpparma.model.core.entities.SegUsuario;
 import erpparma.model.seguridades.dtos.LoginDTO;
 import erpparma.model.seguridades.managers.ManagerSeguridades;
 
@@ -98,6 +99,11 @@ public class BeanSegLogin implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	public String actionMenuNuevoUsuario1() {
+		
+		return "usuarios_ciente";
 	}
 
 	public int getIdSegUsuario() {

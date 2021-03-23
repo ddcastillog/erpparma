@@ -11,27 +11,39 @@
 <h:head></h:head>
 <body>
 
+	<h:form id="form1">
+		<p:menubar>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<f:facet name="options">
+				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
+					icon="pi pi-user">
+					<p:menuitem value="Perfil" icon="pi pi-cog"></p:menuitem>
+					<p:menuitem value="cerrar sesión"
+						action="#{beanSegLogin.actionCerrarSesion()}"
+						icon="pi pi-sign-out"></p:menuitem>
+				</p:menuButton>
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
 	<h:form>
 
 		<p:panel header="Datos de los productos">
 
 			<p:dataGrid value="#{beanCarrito.listaproductos}" var="listado">
 
-				<p:panel header="producto">
+				<p:panel header="Productos ParmaPan">
 
 					<h:panelGrid columns="2">
 
-						<h:outputText value="Codigo" />
-						<h:outputText value="#{listado.codigo}" />
-
 						<h:outputText value="Nombre" />
-						<h:outputText value="#{listado.nombre}" />
+						<h:outputText value="#{listado.nombreProducto}" />
 
 						<h:outputText value="Precio" />
-						<h:outputText value="#{listado.precio}" />
+						<h:outputText value="#{listado.precioProducto}" />
 
 						<p:commandButton value="Agregar" update="@form"
-							icon="fa fa-cart-plus"
+							icon="pi pi-shopping-cart"
 							actionListener="#{beanCarrito.actionListenerAgregarCarrito(listado)}"></p:commandButton>
 
 					</h:panelGrid>
@@ -44,47 +56,63 @@
 			<p:dataTable value="#{beanCarrito.carrito}" var="c">
 
 				<p:column headerText="Codigo">
-					<h:outputText value="#{c.codigo}" />
+					<h:outputText value="#{c.idParmaProducto}" />
 				</p:column>
+				
+					<p:column headerText="Nombre">
+						<h:outputText value="#{c.nombreProducto}" />
+						<f:facet name="footer">
+							<h:outputText value="Suma Total" />
+						</f:facet>
+					</p:column>
 
-				<p:column headerText="Nombre">
-					<h:outputText value="#{c.nombre}" />
-					<f:facet name="footer">
-					<h:outputText value="Suma Total" />
-					</f:facet>
-				</p:column>
+					<p:column headerText="Precio">
+						<h:outputText value="#{c.precioProducto}" />
 
-				<p:column headerText="Precio">
-					<h:outputText value="#{c.precio}" />
+						<f:facet name="footer">
 
-					<f:facet name="footer">
-
-						<h:outputText value="#{beanCarrito.totalcarrito}">
-
-
-							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
-
-						</h:outputText>
+							<h:outputText value="#{beanCarrito.totalcarrito}">
 
 
-					</f:facet>
+								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
 
-				</p:column>
+							</h:outputText>
 
-				<p:column>
 
-					<p:commandButton value="Eliminar producto" update="@form"
-						icon="fa fa-close"
-						actionListener="#{beanCarrito.actionListenereliminarCarrito(c)}">
-					</p:commandButton>
+						</f:facet>
 
-				</p:column>
+					</p:column>
 
+					<p:column>
+
+						<p:commandButton value="Eliminar producto" update="@form"
+							icon="pi pi-trash"
+							actionListener="#{beanCarrito.actionListenereliminarCarrito(c)}">
+						</p:commandButton>
+
+					</p:column>
 			</p:dataTable>
 
+			<div align="center">
+
+				<p:commandButton value="Enviar Pedido " icon="pi pi-shopping-cart"
+					update="@form">
+					<p:confirm header="Confirmación" message="Desea enviar pedido"
+						icon="pi pi-shopping-cart"></p:confirm>
+
+				</p:commandButton>
+
+			</div>
 		</p:panel>
 
 	</h:form>
+
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		<p:commandButton value="SI" type="button"
+			styleClass="ui-confirmdialog-yes" icon="pi pi-check"></p:commandButton>
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no" icon="pi pi-times"></p:commandButton>
+	</p:confirmDialog>
 
 </body>
 </html>

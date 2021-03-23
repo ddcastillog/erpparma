@@ -31,6 +31,11 @@ public class BeanSegUsuarios implements Serializable {
 		return "usuarios";
 	}
 	
+	public String actionNuevoUsuarios() {
+		
+		return "nuevocliente";
+	}
+	
 	public void actionListenerActivarDesactivarUsuario(int idSegUsuario) {
 		try {
 			managerSeguridades.activarDesactivarUsuario(idSegUsuario);
@@ -47,6 +52,31 @@ public class BeanSegUsuarios implements Serializable {
 		nuevoUsuario.setActivo(true);
 		return "usuarios_nuevo";
 	}
+	
+	public String actionMenuNuevoUsuario1() {
+		nuevoUsuario=new SegUsuario();
+		nuevoUsuario.setActivo(true);
+		return "nuevo_cliente";
+	}
+	
+	
+
+	public void actionListenerInsertarNuevoUsuarioCliente() {
+		try {
+			managerSeguridades.insertarUsuarioNuevo(nuevoUsuario);
+			//listaUsuarios=managerSeguridades.findAllUsuarios();
+			nuevoUsuario=new SegUsuario();
+			nuevoUsuario.setActivo(true);
+			JSFUtil.crearMensajeINFO("Usuario insertado.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
 	
 	public void actionListenerInsertarNuevoUsuario() {
 		try {
