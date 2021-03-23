@@ -24,6 +24,9 @@ public class ParmaAjuste implements Serializable {
 	@Column(name="cantidad_ajuste", nullable=false, precision=7, scale=2)
 	private BigDecimal cantidadAjuste;
 
+	@Column(length=2147483647)
+	private String descripcion;
+
 	@Column(name="fecha_ajuste", nullable=false)
 	private Timestamp fechaAjuste;
 
@@ -52,6 +55,14 @@ public class ParmaAjuste implements Serializable {
 
 	public void setCantidadAjuste(BigDecimal cantidadAjuste) {
 		this.cantidadAjuste = cantidadAjuste;
+	}
+
+	public String getDescripcion() {
+		return this.descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 	public Timestamp getFechaAjuste() {

@@ -40,10 +40,19 @@ public class BeanParmaInventario implements Serializable {
 	public void inicializacion() {
 		
 	}
+	public void activoDesactivoProducto(int  idInventario) {
+		try {
+			mInventario.activodesactivoProducto(idInventario);
+			listaInventarios=mInventario.findAllInventario();
+			JSFUtil.crearMensajeINFO("Prodcuto actualizado");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 
 	public String actionCargarMenuInventario() {
 		listaInventarios=mInventario.findAllInventario();	
-		return "inventario";
+		return "inventario?faces-redirect=true";
 	}
 
 	public List<ParmaInventario> getListaInventarios() {

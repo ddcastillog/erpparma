@@ -44,11 +44,11 @@ public class BeanParmaAjustes implements Serializable {
 
 	public String actionCargarMenuAjustes() {
 		listaAjustes = mInventario.findAllParmaAjuste();		
-		return "ajustes";
+		return "ajustes?faces-redirect=true";
 	}
 
 	public void actionInsertarAjustes() throws Exception {
-		try {
+		try {				
 			newtAjuste.setParmaProducto(mInventario.findProductoByName(nombreProducto));
 			mInventario.insertarParmaAjuste(newtAjuste);
 			listaAjustes = mInventario.findAllParmaAjuste();

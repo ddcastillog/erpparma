@@ -14,7 +14,7 @@
 <body>
 	<h:form id="form1">
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu?faces-redirect=true"></p:menuitem>
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -38,6 +38,8 @@
 					value="#{beanParmaAjustes.nombreProducto}" forceSelection="true"
 					completeMethod="#{beanParmaAjustes.completeText}" required="true"
 					scrollHeight="250" />
+				<h:outputText value="Descripción" />
+				<p:inputText value="#{beanParmaAjustes.newtAjuste.descripcion}"></p:inputText>
 				<h:outputText value="Cantidad" />
 				<p:inputNumber value="#{beanParmaAjustes.newtAjuste.cantidadAjuste}"
 					minValue="0"></p:inputNumber>
@@ -53,19 +55,25 @@
 	<h:form id="form3">
 		<p:panel>
 			<p:dataTable value="#{beanParmaAjustes.listaAjustes}" var="a"
-				emptyMessage="No hay registros ">
+				emptyMessage="No hay registros " paginator="true" rows="5">
 				<p:column headerText="ID">
 					<h:outputText value="#{a.idParmaAjuste}" />
 				</p:column>
 				<p:column headerText="Producto">
 					<h:outputText value="#{a.parmaProducto.nombreProducto}" />
 				</p:column>
+				<p:column headerText="Descripción">
+					<h:outputText value="#{a.descripcion}" />
+				</p:column>
 				<p:column headerText="Tipo de Producto">
 					<h:outputText
-						value="#{i.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
+						value="#{a.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
 				</p:column>
 				<p:column headerText="Cantidad">
 					<h:outputText value="#{a.cantidadAjuste}" />
+				</p:column>
+				<p:column headerText="Fecha">
+					<h:outputText value="#{a.fechaAjuste}" />
 				</p:column>
 				<p:column headerText="Ingreso/Egreso">
 					<h:outputText value="#{a.tipoAjuste}" />

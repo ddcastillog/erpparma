@@ -14,7 +14,7 @@
 <body>
 	<h:form id="form1">
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu?faces-redirect=true"></p:menuitem>
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -57,7 +57,7 @@
 	<h:form id="form3">
 		<p:panel>
 			<p:dataTable value="#{beanParmaProducto.listaProductos}" var="p"
-				emptyMessage="No hay registros ">
+				emptyMessage="No hay registros " paginator="true" rows="5">
 				<p:column headerText="ID">
 					<h:outputText value="#{p.idParmaProducto}" />
 				</p:column>

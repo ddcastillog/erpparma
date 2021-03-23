@@ -12,9 +12,9 @@
 	<title>Inventario</title>
 </h:head>
 <body>
-	<h:form id="form1">
+	<h:form>
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu?faces-redirect=true"></p:menuitem>
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -27,10 +27,10 @@
 		</p:menubar>
 	</h:form>
 	
-	<h:form id="form3">
+	<h:form >
 		<p:panel>
 			<p:dataTable value="#{beanParmaInventario.listaInventarios}"
-				var="i" emptyMessage="No hay registros ">
+				var="i" emptyMessage="No hay registros " paginator="true" rows="5">
 				<p:column headerText="ID">
 					<h:outputText value="#{i.idInventario}" />
 				</p:column>
@@ -43,7 +43,16 @@
 				</p:column>
 				<p:column headerText="Cantidad">
 					<h:outputText value="#{i.cantidad}" />					
-				</p:column>						
+				</p:column>		
+				<p:column headerText="Activo">
+					<h:outputText value="#{i.activo}" />					
+				</p:column>	
+				<p:column headerText="Activar/Descativar">
+					<p:commandButton icon="pi pi-check-circle"
+						title="activar/desactivar" styleClass="ui-button-warning"
+						update="@form"
+						actionListener="#{beanParmaInventario.activoDesactivoProducto(i.idInventario)}" />				
+				</p:column>				
 			</p:dataTable>
 		</p:panel>
 	</h:form>

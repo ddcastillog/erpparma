@@ -41,7 +41,12 @@ public class ManagerInventario {
 		ParmaTipoProducto tipoProducto = (ParmaTipoProducto) mDAO.findById(ParmaTipoProducto.class,
 				idParmaTipoProducto);
 		producto.setParmaTipoProducto(tipoProducto);
+		ParmaInventario inventario = new ParmaInventario();
+		inventario.setParmaProducto(producto);
+		inventario.setActivo(true);
+		inventario.setCantidad(0);
 		mDAO.insertar(producto);
+		mDAO.insertar(inventario);
 	}
 
 	// Actualizar producto
@@ -89,15 +94,17 @@ public class ManagerInventario {
 		ajuste.setFechaAjuste(new Timestamp(millis));
 		List<ParmaInventario> inventario = mDAO.findWhere(ParmaInventario.class,
 				"o.parmaProducto='" + ajuste.getParmaProducto().getIdParmaProducto() + "'", null);
-		try {			
+		try {
 			ParmaInventario inve = inventario.get(0);
 			if (ajuste.getTipoAjuste()) {
 				int cantidad = inve.getCantidad().intValue() + ajuste.getCantidadAjuste().intValue();
 				inve.setCantidad(cantidad);
+				mDAO.actualizar(inve);
+				mDAO.insertar(ajuste);
 			} else {
 				int cantidad = inve.getCantidad().intValue() - ajuste.getCantidadAjuste().intValue();
 				if (cantidad >= 0) {
-					inve.setCantidad(cantidad);
+					inve.setCantidad(cantidad);					
 					mDAO.actualizar(inve);
 					mDAO.insertar(ajuste);
 				} else {
@@ -111,6 +118,7 @@ public class ManagerInventario {
 				ParmaInventario newinve = new ParmaInventario();
 				newinve.setParmaProducto(ajuste.getParmaProducto());
 				newinve.setCantidad(ajuste.getCantidadAjuste().intValue());
+				newinve.setActivo(true);
 				mDAO.insertar(newinve);
 				mDAO.insertar(ajuste);
 			} else {
@@ -130,6 +138,16 @@ public class ManagerInventario {
 	// Inventario
 	public List<ParmaInventario> findAllInventario() {
 		return mDAO.findAll(ParmaInventario.class);
+	}
+
+	public void activodesactivoProducto(Integer idInventario) throws Exception {
+		ParmaInventario updateinve = (ParmaInventario) mDAO.findById(ParmaInventario.class, idInventario);
+		if(updateinve.getActivo()) {
+			updateinve.setActivo(false);
+		}else {
+			updateinve.setActivo(true);
+		}
+		mDAO.actualizar(updateinve);
 	}
 
 }

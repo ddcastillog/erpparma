@@ -40,7 +40,7 @@ public class BeanParmaTipoProducto implements Serializable {
 	}
 	public String actionCargarMenuTipoProducto() {
 		listaTipoProductos=mInventario.findAllParmaTipoProducto();
-		return "tipoProductos";
+		return "tipoProductos?faces-redirect=true";
 	}
 	public void actionInsertarTipoProducto() throws Exception {	
 		try {
