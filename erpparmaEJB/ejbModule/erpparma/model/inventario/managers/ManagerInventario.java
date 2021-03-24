@@ -156,6 +156,13 @@ public class ManagerInventario {
 		return mDAO.findAll(ParmaInventario.class);
 	}
 
+	// Inventario filtrado por tipo
+	public List<ParmaInventario> findAllInventario(Integer idtipoProducto) {
+		String field = "parmaProducto.parmaTipoProducto";
+		String where = "o.".concat(field).concat("=").concat(idtipoProducto + "");
+		return mDAO.findWhere(ParmaInventario.class, where, null);
+	}
+
 	public void activodesactivoProducto(Integer idInventario) throws Exception {
 		ParmaInventario updateinve = (ParmaInventario) mDAO.findById(ParmaInventario.class, idInventario);
 		if (updateinve.getActivo()) {

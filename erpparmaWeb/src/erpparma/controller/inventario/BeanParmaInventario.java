@@ -29,8 +29,10 @@ import erpparma.model.inventario.managers.ManagerInventario;
 public class BeanParmaInventario implements Serializable {
 	@EJB
 	private ManagerInventario mInventario;	
-	private List<ParmaInventario> listaInventarios;
-	
+	private List<ParmaInventario> listaVenta;
+	private List<ParmaInventario> listaMateriaPrima;
+	private List<ParmaInventario> listaActivo;
+	private List<ParmaTipoProducto> listaTipoProductos;
 
 	public BeanParmaInventario() {
 
@@ -43,7 +45,9 @@ public class BeanParmaInventario implements Serializable {
 	public void activoDesactivoProducto(int  idInventario) {
 		try {
 			mInventario.activodesactivoProducto(idInventario);
-			listaInventarios=mInventario.findAllInventario();
+			listaVenta=mInventario.findAllInventario(listaTipoProductos.get(0).getIdParmaTipoProducto());
+			listaMateriaPrima=mInventario.findAllInventario(listaTipoProductos.get(1).getIdParmaTipoProducto());
+			listaActivo=mInventario.findAllInventario(listaTipoProductos.get(2).getIdParmaTipoProducto());
 			JSFUtil.crearMensajeINFO("Prodcuto actualizado");
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -51,19 +55,36 @@ public class BeanParmaInventario implements Serializable {
 	}
 
 	public String actionCargarMenuInventario() {
-		listaInventarios=mInventario.findAllInventario();	
+		listaTipoProductos=mInventario.findAllParmaTipoProducto();
+		listaVenta=mInventario.findAllInventario(listaTipoProductos.get(0).getIdParmaTipoProducto());
+		listaMateriaPrima=mInventario.findAllInventario(listaTipoProductos.get(1).getIdParmaTipoProducto());
+		listaActivo=mInventario.findAllInventario(listaTipoProductos.get(2).getIdParmaTipoProducto());
 		return "inventario?faces-redirect=true";
 	}
 
-	public List<ParmaInventario> getListaInventarios() {
-		return listaInventarios;
+	public List<ParmaInventario> getListaVenta() {
+		return listaVenta;
 	}
 
-	public void setListaInventarios(List<ParmaInventario> listaInventarios) {
-		this.listaInventarios = listaInventarios;
+	public List<ParmaInventario> getListaMateriaPrima() {
+		return listaMateriaPrima;
+	}
+
+	public List<ParmaInventario> getListaActivo() {
+		return listaActivo;
+	}
+
+	public void setListaVenta(List<ParmaInventario> listaVenta) {
+		this.listaVenta = listaVenta;
+	}
+
+	public void setListaMateriaPrima(List<ParmaInventario> listaMateriaPrima) {
+		this.listaMateriaPrima = listaMateriaPrima;
+	}
+
+	public void setListaActivo(List<ParmaInventario> listaActivo) {
+		this.listaActivo = listaActivo;
 	}
 
 	
-
-
 }
