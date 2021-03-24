@@ -14,7 +14,8 @@
 <body>
 	<h:form id="form1">
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu?faces-redirect=true"></p:menuitem>
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="menu?faces-redirect=true"></p:menuitem>
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -26,68 +27,164 @@
 			</f:facet>
 		</p:menubar>
 	</h:form>
-	<h:form id="form2">
-		<p:messages>
-			<p:autoUpdate></p:autoUpdate>
-		</p:messages>
-		<p:panel header="Reguistro de Productos" toggleable="true"
-			collapsed="true">
-			<p:panelGrid columns="2">
-				<h:outputText value="Nombre" />
-				<p:inputText value="#{beanParmaProducto.newProducto.nombreProducto}"></p:inputText>
-				<h:outputText value="IVA" />
-				<p:selectBooleanCheckbox
-					value="#{beanParmaProducto.newProducto.ivaProducto}"></p:selectBooleanCheckbox>
-				<h:outputText value="Precio" />
-				<p:inputNumber
-					value="#{beanParmaProducto.newProducto.precioProducto}"></p:inputNumber>
-				<h:outputText value="Tipo" />
-				<p:selectOneMenu id="option"
-					value="#{beanParmaProducto.idParmaTipoProducto}">
-					<f:selectItems value="#{beanParmaProducto.listaTipoProductos}"
-						var="tipo" itemLabel="#{tipo.nombreTipoProducto}"
-						itemValue="#{tipo.idParmaTipoProducto}" />
-				</p:selectOneMenu>
-				<p:commandButton value="Insertar" icon="pi pi-save"
-					actionListener="#{beanParmaProducto.actionInsertarProducto()}"
-					update="@form,:form3"></p:commandButton>
-			</p:panelGrid>
-		</p:panel>
-	</h:form>
-	<h:form id="form3">
-		<p:panel>
-			<p:dataTable value="#{beanParmaProducto.listaProductos}" var="p"
-				emptyMessage="No hay registros " paginator="true" rows="5">
-				<p:column headerText="ID">
-					<h:outputText value="#{p.idParmaProducto}" />
-				</p:column>
-				<p:column headerText="Nombre">
-					<h:outputText value="#{p.nombreProducto}" />
-				</p:column>
-				<p:column headerText="IVA">
-					<h:outputText value="#{p.ivaProducto}" />
-				</p:column>
-				<p:column headerText="Precio">
-					<h:outputText value="#{p.precioProducto}" />
-				</p:column>
-				<p:column headerText="Tipo">
-					<h:outputText value="#{p.parmaTipoProducto.nombreTipoProducto}" />
-				</p:column>
-				<p:column headerText="OPCIONES">
-					<p:commandButton title="editar" icon="pi pi-pencil"
-						actionListener="#{beanParmaProducto.seteditProducto(p)}"
-						update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
-					</p:commandButton>
-					<p:commandButton title="eliminar" icon="pi pi-times-circle"
-						actionListener="#{beanParmaProducto.actionlisternerEliminarProducto(p.idParmaProducto)}"
-						update="@form,:form3">
-						<p:confirm header="Confirmación" message="Desea eliminar"
-							icon="pi pi-exclamation-triangle"></p:confirm>
-					</p:commandButton>
-				</p:column>
-			</p:dataTable>
-		</p:panel>
-	</h:form>
+	<p:tabView id="tabView">
+		<p:tab title="MATERIA PRIMA">
+			<h:form id="form2">
+				<p:messages>
+					<p:autoUpdate></p:autoUpdate>
+				</p:messages>
+				<p:panel header="Reguistro de materia prima" toggleable="true"
+					collapsed="true">
+					<p:panelGrid columns="2">
+						<h:outputText value="Nombre" />
+						<p:inputText
+							value="#{beanParmaProducto.newProducto.nombreProducto}"></p:inputText>
+						<h:outputText value="IVA" />
+						<p:selectBooleanCheckbox
+							value="#{beanParmaProducto.newProducto.ivaProducto}"></p:selectBooleanCheckbox>
+						<h:outputText value="Precio" />
+						<p:inputNumber
+							value="#{beanParmaProducto.newProducto.precioProducto}"></p:inputNumber>						
+						<p:commandButton value="Insertar" icon="pi pi-save"
+							actionListener="#{beanParmaProducto.actionInsertarProducto(1)}"
+							update="@form,:tabView:form3"></p:commandButton>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+			<h:form id="form3">
+				<p:panel>
+					<p:dataTable value="#{beanParmaProducto.listaProductosMateriaPrima}" var="p"
+						emptyMessage="No hay registros " paginator="true" rows="5">
+						<p:column headerText="ID">
+							<h:outputText value="#{p.idParmaProducto}" />
+						</p:column>
+						<p:column headerText="Nombre">
+							<h:outputText value="#{p.nombreProducto}" />
+						</p:column>
+						<p:column headerText="IVA">
+							<h:outputText value="#{p.ivaProducto}" />
+						</p:column>
+						<p:column headerText="Precio">
+							<h:outputText value="#{p.precioProducto}" />
+						</p:column>
+						<p:column headerText="Tipo">
+							<h:outputText value="#{p.parmaTipoProducto.nombreTipoProducto}" />
+						</p:column>
+						<p:column headerText="OPCIONES">
+							<p:commandButton title="editar" icon="pi pi-pencil"
+								actionListener="#{beanParmaProducto.seteditProducto(p)}"
+								update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</p:tab>
+		<p:tab title="VENTA">
+			<h:form id="form4">
+				<p:messages>
+					<p:autoUpdate></p:autoUpdate>
+				</p:messages>
+				<p:panel header="Reguistro de productos a vender" toggleable="true"
+					collapsed="true">
+					<p:panelGrid columns="2">
+						<h:outputText value="Nombre" />
+						<p:inputText
+							value="#{beanParmaProducto.newProducto.nombreProducto}"></p:inputText>
+						<h:outputText value="IVA" />
+						<p:selectBooleanCheckbox
+							value="#{beanParmaProducto.newProducto.ivaProducto}"></p:selectBooleanCheckbox>
+						<h:outputText value="Precio" />
+						<p:inputNumber
+							value="#{beanParmaProducto.newProducto.precioProducto}"></p:inputNumber>						
+						<p:commandButton value="Insertar" icon="pi pi-save"
+							actionListener="#{beanParmaProducto.actionInsertarProducto(0)}"
+							update="@form,:tabView:form5"></p:commandButton>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+			<h:form id="form5">
+				<p:panel>
+					<p:dataTable value="#{beanParmaProducto.listaProductosVentas}" var="p"
+						emptyMessage="No hay registros " paginator="true" rows="5">
+						<p:column headerText="ID">
+							<h:outputText value="#{p.idParmaProducto}" />
+						</p:column>
+						<p:column headerText="Nombre">
+							<h:outputText value="#{p.nombreProducto}" />
+						</p:column>
+						<p:column headerText="IVA">
+							<h:outputText value="#{p.ivaProducto}" />
+						</p:column>
+						<p:column headerText="Precio">
+							<h:outputText value="#{p.precioProducto}" />
+						</p:column>
+						<p:column headerText="Tipo">
+							<h:outputText value="#{p.parmaTipoProducto.nombreTipoProducto}" />
+						</p:column>
+						<p:column headerText="OPCIONES">
+							<p:commandButton title="editar" icon="pi pi-pencil"
+								actionListener="#{beanParmaProducto.seteditProducto(p)}"
+								update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>				
+		</p:tab>
+		<p:tab title="ACTIVOS">
+			<h:form id="form6">
+				<p:messages>
+					<p:autoUpdate></p:autoUpdate>
+				</p:messages>
+				<p:panel header="Reguistro de Activos de la empresa" toggleable="true"
+					collapsed="true">
+					<p:panelGrid columns="2">
+						<h:outputText value="Nombre" />
+						<p:inputText
+							value="#{beanParmaProducto.newProducto.nombreProducto}"></p:inputText>
+						<h:outputText value="IVA" />
+						<p:selectBooleanCheckbox
+							value="#{beanParmaProducto.newProducto.ivaProducto}"></p:selectBooleanCheckbox>
+						<h:outputText value="Precio" />
+						<p:inputNumber
+							value="#{beanParmaProducto.newProducto.precioProducto}"></p:inputNumber>						
+						<p:commandButton value="Insertar" icon="pi pi-save"
+							actionListener="#{beanParmaProducto.actionInsertarProducto(2)}"
+							update="@form,:tabView:form7"></p:commandButton>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+			<h:form id="form7">
+				<p:panel>
+					<p:dataTable value="#{beanParmaProducto.listaProductosActivos}" var="p"
+						emptyMessage="No hay registros " paginator="true" rows="5">
+						<p:column headerText="ID">
+							<h:outputText value="#{p.idParmaProducto}" />
+						</p:column>
+						<p:column headerText="Nombre">
+							<h:outputText value="#{p.nombreProducto}" />
+						</p:column>
+						<p:column headerText="IVA">
+							<h:outputText value="#{p.ivaProducto}" />
+						</p:column>
+						<p:column headerText="Precio">
+							<h:outputText value="#{p.precioProducto}" />
+						</p:column>
+						<p:column headerText="Tipo">
+							<h:outputText value="#{p.parmaTipoProducto.nombreTipoProducto}" />
+						</p:column>
+						<p:column headerText="OPCIONES">
+							<p:commandButton title="editar" icon="pi pi-pencil"
+								actionListener="#{beanParmaProducto.seteditProducto(p)}"
+								update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</p:tab>
+	</p:tabView>
 	<p:dialog header="Editar informacion" widgetVar="dlgEdicion"
 		modal="true">
 		<h:form id="formEdicion">
@@ -107,24 +204,12 @@
 				<h:outputText value="Precio" />
 				<p:inputNumber
 					value="#{beanParmaProducto.editProducto.precioProducto}"></p:inputNumber>
-				<h:outputText value="Tipo" />
-				<p:selectOneMenu id="option"
-					value="#{beanParmaProducto.idParmaTipoProducto}">
-					<f:selectItems value="#{beanParmaProducto.listaTipoProductos}"
-						var="tipo" itemLabel="#{tipo.nombreTipoProducto}"
-						itemValue="#{tipo.idParmaTipoProducto}" />
-				</p:selectOneMenu>
+				<h:outputText value="Tipo" />				
 				<p:commandButton value="Actualizar" icon="fa fa-save"
 					actionListener="#{beanParmaProducto.actionActualizarProductos()}"
-					update="@form,:form3"></p:commandButton>
+					update=":tabView:form3 :tabView:form5 :tabView:form7"></p:commandButton>
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>
-	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-		<p:commandButton value="SI" type="button"
-			styleClass="ui-confirmdialog-yes" icon="pi pi-check"></p:commandButton>
-		<p:commandButton value="No" type="button"
-			styleClass="ui-confirmdialog-no" icon="pi pi-times"></p:commandButton>
-	</p:confirmDialog>
 </body>
 </html>

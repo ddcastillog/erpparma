@@ -34,9 +34,15 @@ public class ManagerInventario {
 	}
 
 	// PRODUCTOS
-	public List<ParmaProducto> findAllParmaProducto() {
-		return mDAO.findAll(ParmaProducto.class);
+	public List<ParmaProducto> findAllParmaProducto(Integer idParmaTipoProducto) {
+		String field = "parmaTipoProducto";
+		String where = "o.".concat(field).concat("=").concat(idParmaTipoProducto+"");
+		return mDAO.findWhere(ParmaProducto.class,where, null);
 	}
+	// PRODUCTOS
+		public List<ParmaProducto> findAllParmaProducto() 	{		
+			return mDAO.findAll(ParmaProducto.class);
+		}
 
 	// Insertar productos
 	public void insertarParmaProducto(ParmaProducto producto, Integer idParmaTipoProducto) throws Exception {
