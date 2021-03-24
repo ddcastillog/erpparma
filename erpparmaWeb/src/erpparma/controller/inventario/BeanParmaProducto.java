@@ -62,9 +62,9 @@ public class BeanParmaProducto implements Serializable {
 		}		
 	}
 
-	public void actionActualizarProductos(Integer idParmaTipoProducto) throws Exception {	
+	public void actionActualizarProductos() throws Exception {	
 		try {
-		mInventario.actualizarParmaProducto(editProducto,listaTipoProductos.get(idParmaTipoProducto).getIdParmaTipoProducto());
+		mInventario.actualizarParmaProducto(editProducto,editProducto.getParmaTipoProducto().getIdParmaTipoProducto());
 		listaProductosVentas= mInventario.findAllParmaProducto(listaTipoProductos.get(0).getIdParmaTipoProducto());
 		listaProductosMateriaPrima= mInventario.findAllParmaProducto(listaTipoProductos.get(1).getIdParmaTipoProducto());	
 		listaProductosActivos= mInventario.findAllParmaProducto(listaTipoProductos.get(2).getIdParmaTipoProducto());

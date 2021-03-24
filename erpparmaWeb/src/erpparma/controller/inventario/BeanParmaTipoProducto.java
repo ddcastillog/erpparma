@@ -64,17 +64,7 @@ public class BeanParmaTipoProducto implements Serializable {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
 		}		
-	}
-	public void actionlisternerEliminarTipoProducto(Integer id) {
-		try {
-			mInventario.eliminarParmaTipoProducto(id);
-			listaTipoProductos=mInventario.findAllParmaTipoProducto();
-			JSFUtil.crearMensajeINFO("Tipo Producto Eliminado");			
-		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR(e.getMessage());
-			e.printStackTrace();
-		}
-	}
+	}	
 	public void seteditTipoProducto(ParmaTipoProducto tipoProducto) {
 		this.editTipoProducto=tipoProducto;
 	}

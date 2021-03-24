@@ -56,13 +56,7 @@
 					<p:commandButton title="editar" icon="pi pi-pencil"
 						actionListener="#{beanParmaTipoProducto.seteditTipoProducto(t)}"
 						update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
-					</p:commandButton>
-					<p:commandButton title="eliminar" icon="pi pi-times-circle"
-						actionListener="#{beanParmaTipoProducto.actionlisternerEliminarTipoProducto(t.idParmaTipoProducto)}"
-						update="@form,:form3">
-						<p:confirm header="Confirmación" message="Desea eliminar"
-							icon="pi pi-exclamation-triangle"></p:confirm>
-					</p:commandButton>
+					</p:commandButton>					
 				</p:column>
 			</p:dataTable>
 		</p:panel>
@@ -85,12 +79,6 @@
 					update="@form,:form3"></p:commandButton>
 			</h:panelGrid>
 		</h:form>
-	</p:dialog>
-	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-		<p:commandButton value="SI" type="button"
-			styleClass="ui-confirmdialog-yes" icon="pi pi-check"></p:commandButton>
-		<p:commandButton value="No" type="button"
-			styleClass="ui-confirmdialog-no" icon="pi pi-times"></p:commandButton>
-	</p:confirmDialog>
+	</p:dialog>	
 </body>
 </html>
