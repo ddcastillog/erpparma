@@ -27,59 +27,7 @@
 			</f:facet>
 		</p:menubar>
 	</h:form>
-	<p:tabView id="tabView">
-		<p:tab title="MATERIA PRIMA">
-			<h:form id="form2">
-				<p:messages>
-					<p:autoUpdate></p:autoUpdate>
-				</p:messages>
-				<p:panel header="Reguistro de materia prima" toggleable="true"
-					collapsed="true">
-					<p:panelGrid columns="2">
-						<h:outputText value="Nombre" />
-						<p:inputText
-							value="#{beanParmaProducto.newProducto.nombreProducto}"></p:inputText>
-						<h:outputText value="IVA" />
-						<p:selectBooleanCheckbox
-							value="#{beanParmaProducto.newProducto.ivaProducto}"></p:selectBooleanCheckbox>
-						<h:outputText value="Precio" />
-						<p:inputNumber
-							value="#{beanParmaProducto.newProducto.precioProducto}"></p:inputNumber>						
-						<p:commandButton value="Insertar" icon="pi pi-save"
-							actionListener="#{beanParmaProducto.actionInsertarProducto(1)}"
-							update="@form,:tabView:form3"></p:commandButton>
-					</p:panelGrid>
-				</p:panel>
-			</h:form>
-			<h:form id="form3">
-				<p:panel>
-					<p:dataTable value="#{beanParmaProducto.listaProductosMateriaPrima}" var="p"
-						emptyMessage="No hay registros " paginator="true" rows="5">
-						<p:column headerText="ID">
-							<h:outputText value="#{p.idParmaProducto}" />
-						</p:column>
-						<p:column headerText="Nombre">
-							<h:outputText value="#{p.nombreProducto}" />
-						</p:column>
-						<p:column headerText="IVA">
-							<h:outputText value="#{p.ivaProducto}" />
-						</p:column>
-						<p:column headerText="Precio">
-							<h:outputText value="#{p.precioProducto}" />
-						</p:column>
-						<p:column headerText="Tipo">
-							<h:outputText value="#{p.parmaTipoProducto.nombreTipoProducto}" />
-						</p:column>
-						<p:column headerText="OPCIONES">
-							<p:commandButton title="editar" icon="pi pi-pencil"
-								actionListener="#{beanParmaProducto.seteditProducto(p)}"
-								update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
-							</p:commandButton>
-						</p:column>
-					</p:dataTable>
-				</p:panel>
-			</h:form>
-		</p:tab>
+	<p:tabView id="tabView">		
 		<p:tab title="VENTA">
 			<h:form id="form4">
 				<p:messages>
@@ -131,6 +79,58 @@
 					</p:dataTable>
 				</p:panel>
 			</h:form>				
+		</p:tab>
+		<p:tab title="MATERIA PRIMA">
+			<h:form id="form2">
+				<p:messages>
+					<p:autoUpdate></p:autoUpdate>
+				</p:messages>
+				<p:panel header="Reguistro de materia prima" toggleable="true"
+					collapsed="true">
+					<p:panelGrid columns="2">
+						<h:outputText value="Nombre" />
+						<p:inputText
+							value="#{beanParmaProducto.newProducto.nombreProducto}"></p:inputText>
+						<h:outputText value="IVA" />
+						<p:selectBooleanCheckbox
+							value="#{beanParmaProducto.newProducto.ivaProducto}"></p:selectBooleanCheckbox>
+						<h:outputText value="Precio" />
+						<p:inputNumber
+							value="#{beanParmaProducto.newProducto.precioProducto}"></p:inputNumber>						
+						<p:commandButton value="Insertar" icon="pi pi-save"
+							actionListener="#{beanParmaProducto.actionInsertarProducto(1)}"
+							update="@form,:tabView:form3"></p:commandButton>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+			<h:form id="form3">
+				<p:panel>
+					<p:dataTable value="#{beanParmaProducto.listaProductosMateriaPrima}" var="p"
+						emptyMessage="No hay registros " paginator="true" rows="5">
+						<p:column headerText="ID">
+							<h:outputText value="#{p.idParmaProducto}" />
+						</p:column>
+						<p:column headerText="Nombre">
+							<h:outputText value="#{p.nombreProducto}" />
+						</p:column>
+						<p:column headerText="IVA">
+							<h:outputText value="#{p.ivaProducto}" />
+						</p:column>
+						<p:column headerText="Precio">
+							<h:outputText value="#{p.precioProducto}" />
+						</p:column>
+						<p:column headerText="Tipo">
+							<h:outputText value="#{p.parmaTipoProducto.nombreTipoProducto}" />
+						</p:column>
+						<p:column headerText="OPCIONES">
+							<p:commandButton title="editar" icon="pi pi-pencil"
+								actionListener="#{beanParmaProducto.seteditProducto(p)}"
+								update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
 		</p:tab>
 		<p:tab title="ACTIVOS">
 			<h:form id="form6">

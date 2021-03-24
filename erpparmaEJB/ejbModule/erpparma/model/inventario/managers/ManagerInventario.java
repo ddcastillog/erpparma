@@ -36,13 +36,14 @@ public class ManagerInventario {
 	// PRODUCTOS
 	public List<ParmaProducto> findAllParmaProducto(Integer idParmaTipoProducto) {
 		String field = "parmaTipoProducto";
-		String where = "o.".concat(field).concat("=").concat(idParmaTipoProducto+"");
-		return mDAO.findWhere(ParmaProducto.class,where, null);
+		String where = "o.".concat(field).concat("=").concat(idParmaTipoProducto + "");
+		return mDAO.findWhere(ParmaProducto.class, where, null);
 	}
+
 	// PRODUCTOS
-		public List<ParmaProducto> findAllParmaProducto() 	{		
-			return mDAO.findAll(ParmaProducto.class);
-		}
+	public List<ParmaProducto> findAllParmaProducto() {
+		return mDAO.findAll(ParmaProducto.class);
+	}
 
 	// Insertar productos
 	public void insertarParmaProducto(ParmaProducto producto, Integer idParmaTipoProducto) throws Exception {
@@ -93,6 +94,13 @@ public class ManagerInventario {
 	// Tipo de producto
 	public List<ParmaAjuste> findAllParmaAjuste() {
 		return mDAO.findAll(ParmaAjuste.class);
+	}
+
+	// Tipo de producto
+	public List<ParmaAjuste> findAllParmaAjuste(boolean tipoAjuste) {
+		String field = "tipoAjuste";
+		String where = "o.".concat(field).concat("=").concat(tipoAjuste + "");
+		return mDAO.findWhere(ParmaAjuste.class, where, null);
 	}
 
 	// Tipo de producto
@@ -158,11 +166,11 @@ public class ManagerInventario {
 		mDAO.actualizar(updateinve);
 	}
 
-	public List<ParmaInventario> mayorcantodadInventario() {		
+	public List<ParmaInventario> mayorcantodadInventario() {
 		List<ParmaInventario> inven = mDAO.findAll(ParmaInventario.class, "cantidad");
 		List<ParmaInventario> cantidades = new ArrayList<ParmaInventario>();
 		int aux = 0;
-		for (int i = inven.size()-1; i>=0; i--) {
+		for (int i = inven.size() - 1; i >= 0; i--) {
 			if (aux < 3) {
 				cantidades.add(inven.get(i));
 				aux++;

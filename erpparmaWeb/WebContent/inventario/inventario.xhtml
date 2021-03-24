@@ -14,7 +14,8 @@
 <body>
 	<h:form>
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu?faces-redirect=true"></p:menuitem>
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="menu?faces-redirect=true"></p:menuitem>
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -26,35 +27,42 @@
 			</f:facet>
 		</p:menubar>
 	</h:form>
-	
-	<h:form >
-		<p:panel>
-			<p:dataTable value="#{beanParmaInventario.listaInventarios}"
-				var="i" emptyMessage="No hay registros " paginator="true" rows="5">
-				<p:column headerText="ID">
-					<h:outputText value="#{i.idInventario}" />
-				</p:column>
-				<p:column headerText="Producto">
-					<h:outputText value="#{i.parmaProducto.nombreProducto}" />
-				</p:column>
-				<p:column headerText="Tipo de Producto">
-					<h:outputText
-						value="#{i.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
-				</p:column>
-				<p:column headerText="Cantidad">
-					<h:outputText value="#{i.cantidad}" />					
-				</p:column>		
-				<p:column headerText="Activo">
-					<h:outputText value="#{i.activo}" />					
-				</p:column>	
-				<p:column headerText="Activar/Descativar">
-					<p:commandButton icon="pi pi-check-circle"
-						title="activar/desactivar" styleClass="ui-button-warning"
-						update="@form"
-						actionListener="#{beanParmaInventario.activoDesactivoProducto(i.idInventario)}" />				
-				</p:column>				
-			</p:dataTable>
-		</p:panel>
-	</h:form>
+	<p:tabView id="tabView">
+		<p:tab title="VENTA">
+		</p:tab>
+		<p:tab title="MATERIA PRIMA">
+			<h:form>
+				<p:panel>
+					<p:dataTable value="#{beanParmaInventario.listaInventarios}"
+						var="i" emptyMessage="No hay registros " paginator="true" rows="5">
+						<p:column headerText="ID">
+							<h:outputText value="#{i.idInventario}" />
+						</p:column>
+						<p:column headerText="Producto">
+							<h:outputText value="#{i.parmaProducto.nombreProducto}" />
+						</p:column>
+						<p:column headerText="Tipo de Producto">
+							<h:outputText
+								value="#{i.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
+						</p:column>
+						<p:column headerText="Cantidad">
+							<h:outputText value="#{i.cantidad}" />
+						</p:column>
+						<p:column headerText="Activo">
+							<h:outputText value="#{i.activo}" />
+						</p:column>
+						<p:column headerText="Activar/Descativar">
+							<p:commandButton icon="pi pi-check-circle"
+								title="activar/desactivar" styleClass="ui-button-warning"
+								update="@form"
+								actionListener="#{beanParmaInventario.activoDesactivoProducto(i.idInventario)}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</p:tab>
+		<p:tab title="ACTIVOS">
+		</p:tab>
+	</p:tabView>
 </body>
 </html>

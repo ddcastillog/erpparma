@@ -32,7 +32,8 @@ import erpparma.model.inventario.managers.ManagerInventario;
 public class BeanParmaAjustes implements Serializable {
 	@EJB
 	private ManagerInventario mInventario;
-	private List<ParmaAjuste> listaAjustes;
+	private List<ParmaAjuste> listaEgresos;
+	private List<ParmaAjuste> listaIngresos;
 	private List<ParmaProducto> listaProductos;
 	private ParmaAjuste newtAjuste;
 	private String nombreProducto;
@@ -50,15 +51,18 @@ public class BeanParmaAjustes implements Serializable {
 	
 
 	public String actionCargarMenuAjustes() {
-		listaAjustes = mInventario.findAllParmaAjuste();		
+		listaIngresos=mInventario.findAllParmaAjuste(true);
+		listaEgresos=mInventario.findAllParmaAjuste(false);
 		return "ajustes?faces-redirect=true";
 	}
 
-	public void actionInsertarAjustes() throws Exception {
+	public void actionInsertarAjustes(boolean tipoAjuste) throws Exception {
 		try {				
 			newtAjuste.setParmaProducto(mInventario.findProductoByName(nombreProducto));
+			newtAjuste.setTipoAjuste(tipoAjuste);
 			mInventario.insertarParmaAjuste(newtAjuste);
-			listaAjustes = mInventario.findAllParmaAjuste();
+			listaIngresos=mInventario.findAllParmaAjuste(true);
+			listaEgresos=mInventario.findAllParmaAjuste(false);
 			newtAjuste = new ParmaAjuste();
 			JSFUtil.crearMensajeINFO("Ajuste Creado");
 		} catch (Exception e) {
@@ -78,17 +82,12 @@ public class BeanParmaAjustes implements Serializable {
 				.collect(Collectors.toList());
 	}
 
-	public List<ParmaAjuste> getListaAjustes() {
-		return listaAjustes;
-	}
+	
 
 	public ParmaAjuste getNewtAjuste() {
 		return newtAjuste;
 	}
-
-	public void setListaAjustes(List<ParmaAjuste> listaAjustes) {
-		this.listaAjustes = listaAjustes;
-	}
+	
 
 	public void setNewtAjuste(ParmaAjuste newtAjuste) {
 		this.newtAjuste = newtAjuste;
@@ -108,6 +107,22 @@ public class BeanParmaAjustes implements Serializable {
 
 	public void setNombreProducto(String nombreProducto) {
 		this.nombreProducto = nombreProducto;
+	}
+
+	public List<ParmaAjuste> getListaEgresos() {
+		return listaEgresos;
+	}
+
+	public List<ParmaAjuste> getListaIngresos() {
+		return listaIngresos;
+	}
+
+	public void setListaEgresos(List<ParmaAjuste> listaEgresos) {
+		this.listaEgresos = listaEgresos;
+	}
+
+	public void setListaIngresos(List<ParmaAjuste> listaIngresos) {
+		this.listaIngresos = listaIngresos;
 	}
 
 
