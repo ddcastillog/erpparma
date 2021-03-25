@@ -32,7 +32,7 @@
 	</h:form>
 	<p:panel>
 		<h:form>
-			<p:dataTable value="#{beanPedido.listaPedidos}" var="p"
+			<p:dataTable value="#{beanPedido.listaPedidosP}" var="p"
 				paginator="true" rows="5">
 
 				<p:column headerText="Cliente">
@@ -42,14 +42,12 @@
 
 				<p:column headerText="Fecha">
 					<h:outputText value="#{p.fechaPedido}" />
-				</p:column>
-
+				</p:column>			
 
 				<p:column headerText="OPCIONES">
-					<p:commandButton icon="pi pi-check-circle"
-						title="procesar pedido" styleClass="ui-button-warning"
-						update="@form"
-						actionListener="#{beanPedido.actionListenerProcesarPedido(p.idPedido)}"/>					
+					<p:commandButton icon="pi pi-check-circle" title="procesar pedido"
+						styleClass="ui-button-warning" update="@form"
+						actionListener="#{beanPedido.actionListenerProcesarPedido(p.idPedido)}" />
 				</p:column>
 
 			</p:dataTable>
