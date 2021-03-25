@@ -87,9 +87,8 @@ public class BeanPedido implements Serializable {
 				ParmaFacturacionDetalle facturaDet = new ParmaFacturacionDetalle();
 				facturaDet.setCantidad(pedido.getParmaDetallePedidos().get(i).getCantidad());
 				System.out.println("CAntidad_________________________");
-				mFacturacion.updteSubtotalItemFactura(facturaDet, pedido.getParmaDetallePedidos().get(i).getCantidad());
 				facturaDet.setParmaProducto(pedido.getParmaDetallePedidos().get(i).getParmaProducto());
-				facturaDet.setParmaFactura(factura);
+				mFacturacion.updteSubtotalItemFactura(facturaDet, pedido.getParmaDetallePedidos().get(i).getCantidad());
 				items.add(facturaDet);
 			}
 

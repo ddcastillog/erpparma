@@ -29,7 +29,7 @@ public class ParmaPedido implements Serializable {
 	private Date fechaPedido;
 
 	//bi-directional many-to-one association to ParmaDetallePedido
-	@OneToMany(mappedBy="parmaPedido")
+	@OneToMany(mappedBy="parmaPedido",fetch=FetchType.EAGER)
 	private List<ParmaDetallePedido> parmaDetallePedidos;
 
 	//bi-directional many-to-one association to SegUsuario
