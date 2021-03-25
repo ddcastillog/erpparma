@@ -178,7 +178,9 @@ public class ManagerInventario {
 
 	public List<ParmaInventario> stockVenta() {
 		List<ParmaTipoProducto> parmaTipoProductos = mDAO.findAll(ParmaTipoProducto.class);
-		return findAllInventario(parmaTipoProductos.get(0).getIdParmaTipoProducto());
+		String field = "parmaProducto.parmaTipoProducto";
+		String where = "o.".concat(field).concat("=").concat(parmaTipoProductos.get(0).getIdParmaTipoProducto() + "").concat("and o.activo=true");
+		return mDAO.findWhere(ParmaInventario.class, where, null);
 
 	}
 
