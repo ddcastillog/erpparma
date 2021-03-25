@@ -15,6 +15,7 @@ import erpparma.model.clientes.managers.ManagerClientes;
 import erpparma.model.core.entities.ParmaAjuste;
 import erpparma.model.core.entities.ParmaInventario;
 import erpparma.model.core.entities.ParmaProducto;
+import erpparma.model.inventario.managers.ManagerInventario;
 
 @Named
 @SessionScoped
@@ -45,12 +46,19 @@ public class BeanCarrito implements Serializable {
 	
 	@Inject
 	
+	
+	
 	private BeanDetallePedido detallepedidos;
+	
+	
+	@EJB
+	
+	private ManagerInventario minventario;
 
 	@PostConstruct
 	public void inicializar() {
 
-	   listaproductos = mClientes.generardatosProductos3();
+	   listaproductos = minventario.stockVenta();
 	 //  dtoproducto1 = mClientes.generardatosProductos();
 		
 	}

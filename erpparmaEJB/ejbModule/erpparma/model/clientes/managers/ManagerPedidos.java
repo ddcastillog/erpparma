@@ -37,8 +37,8 @@ public class ManagerPedidos {
     
     // PEDIDOS
 
-	public List<ParmaPedido> findAllPedidos() {
-		return mDAO.findAll(ParmaPedido.class);
+	public List<ParmaDetallePedido> findAllPedidos() {
+		return mDAO.findAll(ParmaDetallePedido.class);
 	}
 	
 	// PRODUCTOS

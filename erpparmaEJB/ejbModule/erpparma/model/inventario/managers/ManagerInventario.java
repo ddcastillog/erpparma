@@ -176,11 +176,16 @@ public class ManagerInventario {
 		mDAO.actualizar(updateinve);
 	}
 
-	public List<ParmaInventario> stockVenta() {
+	public List<ParmaProducto> stockVenta() {
 		List<ParmaTipoProducto> parmaTipoProductos = mDAO.findAll(ParmaTipoProducto.class);
 		String field = "parmaProducto.parmaTipoProducto";
 		String where = "o.".concat(field).concat("=").concat(parmaTipoProductos.get(0).getIdParmaTipoProducto() + "").concat("and o.activo=true");
-		return mDAO.findWhere(ParmaInventario.class, where, null);
+		List<ParmaInventario> inventarios=mDAO.findWhere(ParmaInventario.class, where, null);
+		List<ParmaProducto> productos= new ArrayList<ParmaProducto>();
+		for (int i = 0; i < inventarios.size(); i++) {
+			productos.add(inventarios.get(i).getParmaProducto());
+		}
+		return productos;
 
 	}
 

@@ -45,7 +45,7 @@ public class ParmaProducto implements Serializable {
 	private List<ParmaFacturacionDetalle> parmaFacturacionDetalles;
 
 	//bi-directional many-to-one association to ParmaInventario
-	@OneToMany(mappedBy="parmaProducto")
+	@OneToMany(mappedBy="parmaProducto", fetch = FetchType.EAGER)
 	private List<ParmaInventario> parmaInventarios;
 
 	//bi-directional many-to-one association to ParmaTipoProducto

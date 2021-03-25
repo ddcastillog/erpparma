@@ -57,6 +57,9 @@
 
 			</p:dataGrid>
 
+
+
+
 			<p:dataTable value="#{beanCarrito.carrito}" var="c">
 
 				<p:column headerText="Cantidad">
@@ -108,7 +111,7 @@
 			<div align="center">
 
 				<p:commandButton value="Enviar Pedido " icon="pi pi-shopping-cart"
-					update="@form" actionListener="#{beanDetallePedido.actionListenerCreaDestino()}">
+					update="@form">
 					<p:confirm header="Confirmación" message="Desea enviar pedido"
 						icon="pi pi-shopping-cart"></p:confirm>
 

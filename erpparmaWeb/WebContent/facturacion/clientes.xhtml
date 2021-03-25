@@ -39,6 +39,10 @@
 
 	<h:form id="formDatos">
 		<p:dataTable value="#{beanFacturacion.clientes}" var="c"
+			rows="10" paginator="true"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+			rowsPerPageTemplate="5,10,{ShowAll|'All'}"
 			emptyMessage="No hay registros aún.">
 			<p:column headerText="ID">
 				<h:outputText value="#{c.codigo}" />

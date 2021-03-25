@@ -14,17 +14,21 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.model.charts.ChartData;
+
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 import erpparma.controller.JSFUtil;
-import erpparma.controller.inventario.BeanParmaAjustes;
+
 import erpparma.model.core.entities.ParmaInventario;
 import erpparma.model.core.entities.SegModulo;
 
+
 import erpparma.model.core.entities.SegUsuario;
+
+
+import erpparma.model.facturacion.dtos.DTOTopClientes;
+import erpparma.model.facturacion.managers.ManagerFacturacion;
 
 import erpparma.model.inventario.managers.ManagerInventario;
 
@@ -43,26 +47,30 @@ public class BeanSegLogin implements Serializable {
 	private PieChartModel pieModel;
 	@EJB
 	private ManagerInventario mInventario;
-	
-	
-	
+
+	private PieChartModel pieModel2;
+	@EJB
+	private ManagerFacturacion mFacturacion;
+
 	public BeanSegLogin() {
-		
+
 	}
+
 	@PostConstruct
 	public void inicializar() {
-		HttpServletRequest req=(HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		String agente=req.getHeader("user-agent");
-		String ipAddress=req.getHeader("X-FORWARDED-FOR");
-		if(ipAddress==null) {
-			ipAddress=req.getRemoteAddr();
+		HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+		String agente = req.getHeader("user-agent");
+		String ipAddress = req.getHeader("X-FORWARDED-FOR");
+		if (ipAddress == null) {
+			ipAddress = req.getRemoteAddr();
 		}
-		direccionIP=ipAddress;
+		direccionIP = ipAddress;
 	}
-	
+
 	public String actionLogin() {
 		try {
-			loginDTO=mSeguridades.login(idSegUsuario, clave,direccionIP);
+			loginDTO = mSeguridades.login(idSegUsuario, clave, direccionIP);
 			return "menu?faces-redirect=true";
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
@@ -70,62 +78,66 @@ public class BeanSegLogin implements Serializable {
 		}
 		return "";
 	}
-	
+
 	public String actionMenu(String ruta) {
-		if(ruta.equals("inventario/menu")) {
+		if (ruta.equals("inventario/menu")) {
 			createPieModel();
 		}
-		return ruta+"?faces-redirect=true";
+
+		if (ruta.equals("facturacion/menu")) {
+			createPieModelF();
+		}
+
+		return ruta + "?faces-redirect=true";
 	}
-	
-	public String actionCerrarSesion(){
+
+	public String actionCerrarSesion() {
 		mSeguridades.cerrarSesion(loginDTO.getIdSegUsuario());
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		return "/login?faces-redirect=true";
 	}
-	
+
 	public void actionVerificarLogin() {
 		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-		String requestPath=ec.getRequestPathInfo();
-		
-		//primero validamos si loginDTO aun no se ha inicializado es porque
-		//el usuario aun no ha pasado por la pantalla de login:
-		if(loginDTO==null || loginDTO.getIdSegUsuario()==0)
-		{
+		String requestPath = ec.getRequestPathInfo();
+
+		// primero validamos si loginDTO aun no se ha inicializado es porque
+		// el usuario aun no ha pasado por la pantalla de login:
+		if (loginDTO == null || loginDTO.getIdSegUsuario() == 0) {
 			try {
 				mSeguridades.accesoNoPermitido(0, requestPath);
-				ec.redirect(ec.getRequestContextPath()+"/faces/login.xhtml");
+				ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return;
 		}
-		
-		//Extraemos la parte inicial de la ruta a la que se esta accediendo:
-		String rutaUsuario=requestPath.substring(1);
-		rutaUsuario=rutaUsuario.substring(0, rutaUsuario.indexOf("/"));
-		//validacion de la ruta de acceso:
-		boolean verificado=false;
-		for(SegModulo modulo:loginDTO.getListaModulos()) {
-			//extraemos el inicio de la ruta (nombre de la carpeta):
-			String rutaModulo=modulo.getRutaAcceso();
-			rutaModulo=rutaModulo.substring(0,rutaModulo.indexOf("/"));
-			//verificamos con la ruta a la que se está accediendo:
-			if(rutaUsuario.equals(rutaModulo)){
-				verificado=true;
+
+		// Extraemos la parte inicial de la ruta a la que se esta accediendo:
+		String rutaUsuario = requestPath.substring(1);
+		rutaUsuario = rutaUsuario.substring(0, rutaUsuario.indexOf("/"));
+		// validacion de la ruta de acceso:
+		boolean verificado = false;
+		for (SegModulo modulo : loginDTO.getListaModulos()) {
+			// extraemos el inicio de la ruta (nombre de la carpeta):
+			String rutaModulo = modulo.getRutaAcceso();
+			rutaModulo = rutaModulo.substring(0, rutaModulo.indexOf("/"));
+			// verificamos con la ruta a la que se está accediendo:
+			if (rutaUsuario.equals(rutaModulo)) {
+				verificado = true;
 				break;
 			}
 		}
 		try {
-			if(verificado==false) {
+			if (verificado == false) {
 				mSeguridades.accesoNoPermitido(loginDTO.getIdSegUsuario(), requestPath);
-				ec.redirect(ec.getRequestContextPath()+"/faces/login.xhtml");
+				ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void actionListenerInicialiarDemo() {
 		try {
 			mSeguridades.inicializarDemo();
@@ -162,34 +174,63 @@ public class BeanSegLogin implements Serializable {
 
 	public void setLoginDTO(LoginDTO loginDTO) {
 		this.loginDTO = loginDTO;
-	}	
-	private  void createPieModel() {
-        pieModel = new PieChartModel();
-        ChartData data = new ChartData();
+	}
 
-        PieChartDataSet dataSet = new PieChartDataSet();
-        List<ParmaInventario> cantidades=mInventario.mayorcantodadInventario();
-        List<Number> values = new ArrayList<>();
-        for (int i = 0; i < cantidades.size(); i++) {
+	private void createPieModel() {
+		pieModel = new PieChartModel();
+		ChartData data = new ChartData();
+
+		PieChartDataSet dataSet = new PieChartDataSet();
+		List<ParmaInventario> cantidades = mInventario.mayorcantodadInventario();
+		List<Number> values = new ArrayList<>();
+		for (int i = 0; i < cantidades.size(); i++) {
 			values.add(cantidades.get(i).getCantidad());
-		}        
-        dataSet.setData(values);
+		}
+		dataSet.setData(values);
+		List<String> bgColors = new ArrayList<>();
+		bgColors.add("rgb(255, 99, 132)");
+		bgColors.add("rgb(54, 162, 235)");
+		bgColors.add("rgb(255, 205, 86)");
+		dataSet.setBackgroundColor(bgColors);
 
-        List<String> bgColors = new ArrayList<>();
-        bgColors.add("rgb(255, 99, 132)");
-        bgColors.add("rgb(54, 162, 235)");
-        bgColors.add("rgb(255, 205, 86)");
-        dataSet.setBackgroundColor(bgColors);
+		data.addChartDataSet(dataSet);
+		List<String> labels = new ArrayList<>();
+		for (int i = 0; i < cantidades.size(); i++) {
+			labels.add(cantidades.get(i).getParmaProducto().getNombreProducto());
+		}
+		data.setLabels(labels);
 
-        data.addChartDataSet(dataSet);
-        List<String> labels = new ArrayList<>();
-        for (int i = 0; i < cantidades.size(); i++) {
-        	labels.add(cantidades.get(i).getParmaProducto().getNombreProducto());
-		}  
-        data.setLabels(labels);
+		pieModel.setData(data);
+	}
 
-        pieModel.setData(data);
-    }
+	private void createPieModelF() {
+		pieModel2 = new PieChartModel();
+		ChartData data = new ChartData();
+
+		PieChartDataSet dataSet = new PieChartDataSet();
+		List<DTOTopClientes> clientes = mFacturacion.getTopClientes();
+		List<Number> values = new ArrayList<>();
+		for (int i = 0; i < clientes.size(); i++) {
+			values.add(clientes.get(i).getCantidad());
+		}
+		dataSet.setData(values);
+		List<String> bgColors = new ArrayList<>();
+		bgColors.add("rgb(255, 99, 132)");
+		bgColors.add("rgb(54, 162, 235)");
+		bgColors.add("rgb(255, 205, 86)");
+		bgColors.add("rgb(33, 115, 27)");
+		bgColors.add("rgb(67, 489, 0)");
+		dataSet.setBackgroundColor(bgColors);
+
+		data.addChartDataSet(dataSet);
+		List<String> labels = new ArrayList<>();
+		for (int i = 0; i < clientes.size(); i++) {
+			labels.add(clientes.get(i).getNombreCliente());
+		}
+		data.setLabels(labels);
+
+		pieModel2.setData(data);
+	}
 
 	public PieChartModel getPieModel() {
 		return pieModel;
@@ -199,6 +240,14 @@ public class BeanSegLogin implements Serializable {
 		this.pieModel = pieModel;
 	}
 
+	public PieChartModel getPieModel2() {
+		return pieModel2;
+	}
+
+	public void setPieModel2(PieChartModel pieModel2) {
+		this.pieModel2 = pieModel2;
+	}
+
 	public String getDireccionIP() {
 		return direccionIP;
 	}
@@ -206,5 +255,5 @@ public class BeanSegLogin implements Serializable {
 	public void setDireccionIP(String direccionIP) {
 		this.direccionIP = direccionIP;
 	}
-	
+
 }

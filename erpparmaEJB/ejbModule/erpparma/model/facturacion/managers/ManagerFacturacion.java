@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -20,6 +21,7 @@ import erpparma.model.core.entities.ThmEmpleado;
 import erpparma.model.core.managers.ManagerDAO;
 import erpparma.model.facturacion.dtos.DTOClientes;
 import erpparma.model.facturacion.dtos.DTOFactura;
+import erpparma.model.facturacion.dtos.DTOTopClientes;
 
 @Stateless
 @LocalBean
@@ -108,6 +110,19 @@ public class ManagerFacturacion {
 		return productos;
 	}
 
+	public List<DTOTopClientes> getTopClientes() {
+		List<ParmaFactura> facturas = this.mDao.findAll(ParmaFactura.class, "total", false);
+		List<DTOTopClientes> c = new ArrayList<DTOTopClientes>();
+		if (facturas.size() >= 5) {
+			for (int i = 0; i < 5; i++) {
+				ParmaFactura f = facturas.get(i);
+				c.add(new DTOTopClientes(f.getTotal().doubleValue(),
+						f.getSegUsuario().getNombres() + ' ' + f.getSegUsuario().getApellidos()));
+			}
+		}
+		return c;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void crearFactura(ParmaFactura factura, DTOClientes cliente, Integer idCajero) throws Exception {
 		factura.setFechaFactura(new Date());
@@ -168,6 +183,12 @@ public class ManagerFacturacion {
 
 		factura.setSubtotal(subtotal);
 		factura.setTotal(total);
+	}
+
+	public BigDecimal calculateChange(Double total, Double pay) {
+		Double change = pay - total;
+		BigDecimal response = UtilFacturacion.getNewBigDecimal(change.toString(), 2);
+		return response;
 	}
 
 	public ParmaFacturacionDetalle initItemFacturaValuesNew(ParmaProducto p) {

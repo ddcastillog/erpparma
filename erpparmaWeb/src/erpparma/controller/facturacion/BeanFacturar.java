@@ -1,19 +1,27 @@
 package erpparma.controller.facturacion;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import erpparma.controller.JSFUtil;
 import erpparma.controller.seguridades.BeanSegLogin;
@@ -22,6 +30,13 @@ import erpparma.model.core.entities.ParmaFacturacionDetalle;
 import erpparma.model.core.entities.ParmaProducto;
 import erpparma.model.facturacion.dtos.DTOClientes;
 import erpparma.model.facturacion.managers.ManagerFacturacion;
+import erpparma.model.inventario.managers.ManagerInventario;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @Named
 @SessionScoped
@@ -29,6 +44,9 @@ public class BeanFacturar implements Serializable {
 
 	@EJB
 	private ManagerFacturacion mf;
+
+	@EJB
+	private ManagerInventario mInventario;
 
 	private List<ParmaProducto> productos;
 
@@ -48,6 +66,10 @@ public class BeanFacturar implements Serializable {
 
 	private String codeOrEmail;
 
+	private Double payValue;
+
+	private String changeValue;
+
 	public BeanFacturar() {
 
 	}
@@ -56,6 +78,10 @@ public class BeanFacturar implements Serializable {
 		this.items = new ArrayList<ParmaFacturacionDetalle>();
 		this.factura = new ParmaFactura();
 		this.mf.initFacturaValues(factura);
+		this.payValue = 0.00;
+		this.changeValue = "$ 0.00";
+		System.out.println("**** TOP CLIENTES *****");
+		this.mf.getTopClientes();
 	}
 
 	@PostConstruct
@@ -78,6 +104,14 @@ public class BeanFacturar implements Serializable {
 		}
 
 		try {
+	
+			Boolean stock = this.mInventario.ajusteFactura(this.items, this.login.getLoginDTO());
+			System.out.println(stock);
+			if (!stock) {
+				JSFUtil.crearMensajeERROR("Algunos productos no tienen stock disponible");
+				return "";
+			}
+			
 			this.mf.crearFactura(this.factura, this.beanFacturacion.getClienteSelected(), this.login.getIdSegUsuario());
 			System.out.println("Creado correctamente");
 			this.mf.findFacturas(this.beanFacturacion.getClienteSelected());
@@ -103,6 +137,8 @@ public class BeanFacturar implements Serializable {
 				this.items.add(this.mf.initItemFacturaValuesNew(p));
 				this.factura.setParmaFacturacionDetalles(this.items);
 				this.mf.calculateFacturaValues(factura);
+				this.payValue = 0.00;
+				this.changeValue = "$ 0.00";
 				JSFUtil.crearMensajeINFO("Producto agregado");
 			} else {
 				JSFUtil.crearMensajeWARN("El producto ya este agreado!");
@@ -113,32 +149,16 @@ public class BeanFacturar implements Serializable {
 		}
 	}
 
-//	public void calcularSubTotalGlobal() {
-//		this.factura.setSubtotal(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
-//		this.factura.setDescuento(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
-//		this.factura.setIva(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
-//		this.factura.setTotal(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
-//		for (ParmaFacturacionDetalle item : items) {
-//			Double sp = this.factura.getSubtotal().doubleValue() + item.getSubtotal().doubleValue();
-//			BigDecimal d = new BigDecimal(sp).setScale(2, RoundingMode.HALF_UP);
-//			this.factura.setSubtotal(d);
-//			this.factura.setTotal(d);
-//		}
-//
-//		Double subtotal = this.getFactura().getSubtotal().doubleValue();
-//		if (subtotal >= 10) {
-//			Double desc = subtotal * 0.10;
-//			Double iva = (subtotal - desc) * 0.14;
-//			this.factura.setDescuento(new BigDecimal(desc).setScale(2, RoundingMode.HALF_UP));
-//			this.factura.setIva(new BigDecimal(iva).setScale(2, RoundingMode.HALF_UP));
-//			BigDecimal df = new BigDecimal(subtotal - desc + iva).setScale(2, RoundingMode.HALF_UP);
-//			this.factura.setTotal(df);
-//		} else {
-//			this.factura.setIva(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
-//			this.factura.setDescuento(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
-//		}
-//
-//	}
+	public void calculateChange() {
+		Double total = this.factura.getTotal().doubleValue();
+		if (total > this.payValue) {
+			JSFUtil.crearMensajeWARN("Error, el pago es menor que el total a pagar!");
+			this.payValue = 0.00;
+			this.changeValue = "$ 0.00";
+			return;
+		}
+		this.changeValue = "$ " + this.mf.calculateChange(total, this.payValue).toString();
+	}
 
 	public void changeCliente() {
 		DTOClientes c = this.mf.findClienteByIdOrCorreo(this.codeOrEmail.toString());
@@ -158,11 +178,15 @@ public class BeanFacturar implements Serializable {
 	public void refreshCantidad(Integer pos) {
 		this.mf.updteSubtotalItemFactura(this.items.get(pos), this.cantidad);
 		this.mf.calculateFacturaValues(factura);
+		this.payValue = 0.00;
+		this.changeValue = "$ 0.00";
 	}
 
 	public void deleteProducto(Integer pos) {
 		this.items.remove(pos.intValue());
 		this.mf.calculateFacturaValues(factura);
+		this.payValue = 0.00;
+		this.changeValue = "$ 0.00";
 	}
 
 	public List<ParmaProducto> getProductos() {
@@ -185,7 +209,7 @@ public class BeanFacturar implements Serializable {
 	public List<String> completeText(String query) {
 		String queryLowerCase = query.toLowerCase();
 		List<String> productList = new ArrayList<>();
-		List<ParmaProducto> products = this.mf.findAllProductosVenta();
+		List<ParmaProducto> products = this.mInventario.stockVenta();
 		for (ParmaProducto producto : products) {
 			productList.add(producto.getNombreProducto());
 		}
@@ -193,6 +217,60 @@ public class BeanFacturar implements Serializable {
 				.collect(Collectors.toList());
 	}
 
+	public void actionFacturaPDF() {
+		Map<String, Object> parameterMap = new HashMap<String, Object>();
+		parameterMap.put("factura", 27);
+		FacesContext context = FacesContext.getCurrentInstance();
+		ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+		String ruta = servletContext.getRealPath("facturacion/facturaparma.jasper");
+		System.out.println("RUTA: " + ruta);
+		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+		response.addHeader("Content-disposition", "attachment;filename=factura.pdf");
+		response.setContentType("application/pdf");
+		try {
+			Class.forName("org.postgresql.Driver");
+			Connection connection = null;
+			connection = DriverManager.getConnection("jdbc:postgresql://143.255.250.17:5432/ddcastillog", "ddcastillog",
+					"admin1004291447");
+			JasperReport jr = null;
+			jr = (JasperReport) JRLoader.loadObjectFromFile(
+					"/home/kevincatu/git/erpparma/erpparmaWeb/WebContent/facturacion/facturaparma.jasper");
+			JasperPrint impresion = JasperFillManager.fillReport(jr, parameterMap, connection);
+			JasperExportManager.exportReportToPdfStream(impresion, response.getOutputStream());
+
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	
+	}
+
+	
+	public void exportarPDF() {
+		Map<String,Object> parametros= new HashMap<String,Object>();
+		parametros.put("factura", 35);
+		
+		try {
+			Class.forName("org.postgresql.Driver");
+			Connection connection = null;
+			connection = DriverManager.getConnection("jdbc:postgresql://143.255.250.17:5432/ddcastillog", "ddcastillog",
+					"admin1004291447");
+			File jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("factura.jasper"));
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasper.getPath(),parametros, connection);
+			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+			response.addHeader("Content-disposition","attachment; filename=jsfReporte.pdf");
+			ServletOutputStream stream = response.getOutputStream();
+			JasperExportManager.exportReportToPdfStream(jasperPrint, stream);
+			stream.flush();
+			stream.close();
+			FacesContext.getCurrentInstance().responseComplete();
+		} catch (ClassNotFoundException | SQLException | JRException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public String getTxtLike() {
 		return txtLike;
 	}
@@ -247,6 +325,22 @@ public class BeanFacturar implements Serializable {
 
 	public void setLogin(BeanSegLogin login) {
 		this.login = login;
+	}
+
+	public Double getPayValue() {
+		return payValue;
+	}
+
+	public void setPayValue(Double payValue) {
+		this.payValue = payValue;
+	}
+
+	public String getChangeValue() {
+		return changeValue;
+	}
+
+	public void setChangeValue(String changeValue) {
+		this.changeValue = changeValue;
 	}
 
 	private static final long serialVersionUID = 1L;

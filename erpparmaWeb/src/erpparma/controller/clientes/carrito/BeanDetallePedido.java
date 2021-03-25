@@ -44,13 +44,13 @@ public class BeanDetallePedido implements Serializable {
 	 
 	 public void inicializar() {
 		 
-		// listadetallepedido= mPedido.findAllPedidos();
+	    listadetallepedido= mPedido.findAllPedidos();
 		 listaproductos = mclientes.generardatosProductos();
 	 }
 	
 	 
 	 
-	 public void actionListenerCreaDestino() {
+	 public void actionListenerCreaDetallePedido() {
 			try {
 				
 				mPedido.insertarPedido(cantidad, id_parma_pedido, id_parma_producto);
