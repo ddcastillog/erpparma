@@ -8,18 +8,18 @@
 	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
 		type="preRenderView"></f:event>
 </f:metadata>
+
 <h:head>
 	<title>Pedidos</title>
 </h:head>
 <body>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
 	<h:form>
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home"
-				action="/menu?faces-redirect=true" />
-			<p:menuitem value="Ver Pedidos" icon="pi pi-users"
-				action="#{beanPedido.actionMenuPedidos()}" />
-				
-			
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu" />
+
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -29,7 +29,32 @@
 				</p:menuButton>
 			</f:facet>
 		</p:menubar>
-		<p:staticMessage severity="info" summary="Módulo de Pedidos"></p:staticMessage>
-	</h:form>	
+	</h:form>
+	<p:panel>
+		<h:form>
+			<p:dataTable value="#{beanPedido.listaPedidos}" var="p"
+				paginator="true" rows="5">
+
+				<p:column headerText="Cliente">
+					<h:outputText
+						value="#{p.segUsuario.nombres} #{p.segUsuario.apellidos}" />
+				</p:column>
+
+				<p:column headerText="Fecha">
+					<h:outputText value="#{p.fechaPedido}" />
+				</p:column>
+
+
+				<p:column headerText="OPCIONES">
+					<p:commandButton icon="pi pi-check-circle"
+						title="procesar pedido" styleClass="ui-button-warning"
+						update="@form"
+						actionListener="#{beanPedido.actionListenerProcesarPedido(p.idPedido)}"/>					
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</p:panel>
+
 </body>
 </html>
