@@ -29,6 +29,8 @@ public class ParmaProducto implements Serializable {
 
 	@Column(name="precio_producto", nullable=false, precision=7, scale=2)
 	private BigDecimal precioProducto;
+	
+	
 
 	//bi-directional many-to-one association to ParmaAjuste
 	@OneToMany(mappedBy="parmaProducto")
@@ -53,6 +55,11 @@ public class ParmaProducto implements Serializable {
 
 	public ParmaProducto() {
 	}
+	
+
+	
+
+
 
 	public Integer getIdParmaProducto() {
 		return this.idParmaProducto;

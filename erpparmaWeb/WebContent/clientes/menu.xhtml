@@ -1,25 +1,27 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      	xmlns:p="http://primefaces.org/ui"> 
-      	
-  	<f:metadata>
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<f:metadata>
 	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
 		type="preRenderView"></f:event>
-     </f:metadata>
-
-<h:head></h:head> 
-<body> 
-
-<h:form>
+</f:metadata>
+<h:head>
+	<title>Clientes</title>
+</h:head>
+<body>
+	<h:form>
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="/menu" />
-			<p:menuitem value="Acceder al Sistema" icon="pi pi-briefcase" action="#{beanSegUsuarios.actionMenuUsuarios()}"/>
-			<p:menuitem value="Realizar Compra" icon="pi pi-briefcase" action="#{beanParmaTipoProducto.actionCargarMenuTipoProducto()}"/>
-			<p:menuitem value="Reporte Factura" icon="pi pi-step-forward" />
-			<p:menuitem value="Reporte Pedido" icon="pi pi-step-backward" />
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="/menu?faces-redirect=true" />
+			<p:menuitem value="Comprar" icon="pi pi-shopping-cart"
+				action="#{beanCarrito.actionComprar1()}" />
+			<p:menuitem value="Ver Facturas " icon="pi pi-list"
+				action="#{beanSegAsignaciones.actionMenuAsignaciones()}" />
+			<p:menuitem value="Ver Informacion " icon="pi pi-list"
+				action="#{beanSegAsignaciones.actionMenuAsignaciones()}" />
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -29,9 +31,8 @@
 				</p:menuButton>
 			</f:facet>
 		</p:menubar>
-		<p:staticMessage severity="info" summary="Bienvenido al Modulo de Clientes"></p:staticMessage>
+		<p:staticMessage severity="info" summary="Bienvenido"></p:staticMessage>
 	</h:form>
 	<div></div>
-
-</body> 
+</body>
 </html>

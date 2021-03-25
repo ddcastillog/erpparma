@@ -23,6 +23,7 @@ public class BeanSegAsignaciones implements Serializable {
 	
 	private List<SegUsuario> listaUsuarios;
 	private List<SegModulo> listaModulos;
+	private List<SegModulo> listaModulos1;
 	private int idSegUsuarioSeleccionado;
 	private List<SegAsignacion> listaAsignaciones;
 	
@@ -34,9 +35,23 @@ public class BeanSegAsignaciones implements Serializable {
 	public String actionMenuAsignaciones() {
 		listaUsuarios=managerSeguridades.findAllUsuarios();
 		listaModulos=managerSeguridades.findAllModulos();
+	
 		return "asignaciones";
 	}
 	
+	public String actionMenuAsignacionesClientes() {
+		listaUsuarios=managerSeguridades.findAllUsuarios();
+		listaModulos=managerSeguridades.findAllModulos1();
+		return "asignaciones";
+	}
+	
+	
+	
+	
+	public void setListaModulos1(List<SegModulo> listaModulos1) {
+		this.listaModulos1 = listaModulos1;
+	}
+
 	public void actionListenerSeleccionarUsuario() {
 		listaAsignaciones=managerSeguridades.findAsignacionByUsuario(idSegUsuarioSeleccionado);
 	}
@@ -51,6 +66,23 @@ public class BeanSegAsignaciones implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+	
+	public void actionListenerAsignarModuloCliente(int idSegModulo) {
+		try {
+			managerSeguridades.asignarModulo(idSegUsuarioSeleccionado, idSegModulo);
+			listaAsignaciones=managerSeguridades.findAsignacionByUsuario(idSegUsuarioSeleccionado);
+			JSFUtil.crearMensajeINFO("Módulo asignado.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 	
 	public void actionListenerAsignarModuloClienteNuevo(int idSegModulo) {
@@ -75,6 +107,18 @@ public class BeanSegAsignaciones implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void actionListenerEliminarAsignacionModuloClientes(int idSegAsignacion) {
+		try {
+			managerSeguridades.eliminarAsignacion(idSegAsignacion);
+			listaAsignaciones=managerSeguridades.findAsignacionByUsuario(idSegUsuarioSeleccionado);
+			JSFUtil.crearMensajeINFO("Asignación eliminada.");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR("NO tiene acceso de eliminar esa asignacion");
+			e.printStackTrace();
+		}
+	}
+	
 
 	public List<SegUsuario> getListaUsuarios() {
 		return listaUsuarios;
@@ -87,6 +131,18 @@ public class BeanSegAsignaciones implements Serializable {
 	public List<SegModulo> getListaModulos() {
 		return listaModulos;
 	}
+	
+	public List<SegModulo> getListaModulos1() {
+		
+		SegModulo asig = new SegModulo();
+		
+		if (asig.getNombreModulo()=="Cliente") 
+			
+			return listaModulos;
+		
+		return listaModulos;
+	}
+
 
 	public void setListaModulos(List<SegModulo> listaModulos) {
 		this.listaModulos = listaModulos;

@@ -27,6 +27,9 @@ import erpparma.model.inventario.managers.ManagerInventario;
 @Named
 @SessionScoped
 public class BeanParmaInventario implements Serializable {
+	
+	private int cantidad;
+	
 	@EJB
 	private ManagerInventario mInventario;	
 	private List<ParmaInventario> listaInventarios;
@@ -35,6 +38,37 @@ public class BeanParmaInventario implements Serializable {
 	public BeanParmaInventario() {
 
 	}
+	
+	
+	
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+
+
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
+	}
+
+
+
+
+	public ManagerInventario getmInventario() {
+		return mInventario;
+	}
+
+
+
+
+	public void setmInventario(ManagerInventario mInventario) {
+		this.mInventario = mInventario;
+	}
+
+
+
 
 	@PostConstruct
 	public void inicializacion() {

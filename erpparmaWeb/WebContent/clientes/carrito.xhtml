@@ -8,7 +8,9 @@
 
 
 
-<h:head></h:head>
+<h:head>
+	<title>Clientes</title>
+</h:head>
 <body>
 
 	<h:form id="form1">
@@ -41,10 +43,14 @@
 
 						<h:outputText value="Precio" />
 						<h:outputText value="#{listado.precioProducto}" />
+					
+						<h:outputText value="Cantidad" />
+						<p:spinner value="#{bean}" 
+							 />
 
 						<p:commandButton value="Agregar" update="@form"
 							icon="pi pi-shopping-cart"
-							actionListener="#{beanCarrito.actionListenerAgregarCarrito(listado)}"></p:commandButton>
+							actionListener="#{beanCarrito.actionListenerAgregarCarrito(listado,beanCarrito.cantidadcarrito)}"></p:commandButton>
 
 					</h:panelGrid>
 
@@ -55,42 +61,50 @@
 
 			<p:dataTable value="#{beanCarrito.carrito}" var="c">
 
-				<p:column headerText="Codigo">
-					<h:outputText value="#{c.idParmaProducto}" />
+				<p:column headerText="Cantidad">
+					<h:outputText value="#{beanCarrito.cantidad}" />
+				</p:column>
+
+				<p:column headerText="Nombre">
+					<h:outputText value="#{c.nombreProducto}" />
 				</p:column>
 				
-					<p:column headerText="Nombre">
-						<h:outputText value="#{c.nombreProducto}" />
-						<f:facet name="footer">
-							<h:outputText value="Suma Total" />
-						</f:facet>
-					</p:column>
+				
 
-					<p:column headerText="Precio">
-						<h:outputText value="#{c.precioProducto}" />
+				<p:column headerText="Precio">
+					<h:outputText value="#{c.precioProducto}" />
+					
+					<f:facet name="footer">
+						<h:outputText value="Suma Total" />
+					</f:facet>
+			
+					
 
-						<f:facet name="footer">
+				</p:column>
+				
+				<p:column headerText="Suma Parcial">
+					<h:outputText value="#{beanCarrito.totalparcial}" />
+					
+					<f:facet name="footer">
 
-							<h:outputText value="#{beanCarrito.totalcarrito}">
+						<h:outputText value="#{beanCarrito.totalcarrito}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+						</h:outputText>
 
+					</f:facet>
+					
+				</p:column>
+				
+				
 
-								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+				<p:column>
 
-							</h:outputText>
+					<p:commandButton value="Eliminar producto" update="@form"
+						icon="pi pi-trash"
+						actionListener="#{beanCarrito.actionListenereliminarCarrito(c)}">
+					</p:commandButton>
 
-
-						</f:facet>
-
-					</p:column>
-
-					<p:column>
-
-						<p:commandButton value="Eliminar producto" update="@form"
-							icon="pi pi-trash"
-							actionListener="#{beanCarrito.actionListenereliminarCarrito(c)}">
-						</p:commandButton>
-
-					</p:column>
+				</p:column>
 			</p:dataTable>
 
 			<div align="center">

@@ -89,6 +89,58 @@ public class ManagerSeguridades {
 		mAuditoria.mostrarLog(getClass(), "inicializarDemo", "Inicializacion de bdd demo terminada.");
     }
     
+    /////////
+    
+    public void inicializarUsuarioNevo() throws Exception {
+    	mAuditoria.mostrarLog(getClass(), "Creacion Cliente Nuevo", "Inicializacion de bdd demo.");
+    	List<SegUsuario> listaUsuarios=mDAO.findAll(SegUsuario.class);
+    	
+    	int idSegUsuarioAdmin=0;
+    	
+    	boolean existeAdministrador=false;
+    	for(SegUsuario u:listaUsuarios) {
+    		mAuditoria.mostrarLog(getClass(), "inicializarDemo", "Info de usuario "+u.getCorreo()+" "+u.getIdSegUsuario());
+    		//Se considera al usuario 1 como administrador: 
+    		if(u.getIdSegUsuario()==1) {
+    			existeAdministrador=true;
+    			idSegUsuarioAdmin=1;
+    			System.out.println("Ya existe un usuario administrador (con id usuario 1)");
+    		}
+    	}
+
+    	//creacion del usuario administrador:
+    	if(existeAdministrador==false) {
+			SegUsuario administrador=new SegUsuario();
+			administrador.setActivo(true);
+			administrador.setApellidos("admin");
+			administrador.setClave("admin");
+			administrador.setCorreo("admin@minimarketdemo.com");
+			administrador.setNombres("admin");
+			administrador.setCodigo("admin");
+			mDAO.insertar(administrador);
+			idSegUsuarioAdmin=administrador.getIdSegUsuario();
+			mAuditoria.mostrarLog(getClass(), "inicializarDemo", "Usuario administrador creado (id : "+idSegUsuarioAdmin);
+    	}
+		//inicializacion de modulos:
+		SegModulo modulo=new SegModulo();
+		int idSegModuloSeguridades=0;
+		int idSegModuloAuditoria=0;
+		modulo.setNombreModulo("Seguridades");
+		modulo.setRutaAcceso("seguridades/menu");
+		mDAO.insertar(modulo);
+		idSegModuloSeguridades=modulo.getIdSegModulo();
+		modulo=new SegModulo();
+		modulo.setNombreModulo("Auditoría");
+		modulo.setRutaAcceso("auditoria/menu");
+		mDAO.insertar(modulo);
+		idSegModuloAuditoria=modulo.getIdSegModulo();
+		mAuditoria.mostrarLog(getClass(), "inicializarDemo", "Módulos creados.");
+		//asignacion de accesos:
+		asignarModulo(idSegUsuarioAdmin, idSegModuloSeguridades);
+		asignarModulo(idSegUsuarioAdmin, idSegModuloAuditoria);
+		mAuditoria.mostrarLog(getClass(), "inicializarDemo", "Inicializacion de bdd demo terminada.");
+    }
+    
     /**
      * Funcion de autenticacion mediante el uso de credenciales.
      * @param idSegUsuario El codigo del usuario que desea autenticarse.
@@ -129,6 +181,79 @@ public class ManagerSeguridades {
     	throw new Exception("Error en credenciales");
     }
     
+    public LoginDTO login1(int idSegUsuario,String clave) throws Exception{
+    	if(ModelUtil.isEmpty(clave)) {
+    		mAuditoria.mostrarLog(getClass(), "login", "Debe indicar una clave "+idSegUsuario);
+    		throw new Exception("Debe indicar una clave");
+    	}
+    	SegUsuario usuario=(SegUsuario) mDAO.findById(SegUsuario.class, idSegUsuario);
+    	if(usuario==null) {
+    		mAuditoria.mostrarLog(getClass(), "login", "No existe usuario "+idSegUsuario);
+    		throw new Exception("Error en credenciales.");
+    	}
+    		
+    	if(usuario.getClave().equals(clave)) {
+    		if(usuario.getActivo()==false) {
+        		mAuditoria.mostrarLog(getClass(), "login", "Intento de login usuario desactivado "+idSegUsuario);
+        		throw new Exception("El usuario esta desactivado.");
+        	}
+    		mAuditoria.mostrarLog(getClass(), "login", "Login exitoso "+idSegUsuario);
+    		//crear DTO:
+    		LoginDTO loginDTO=new LoginDTO();
+    		loginDTO.setIdSegUsuario(usuario.getIdSegUsuario());
+    		loginDTO.setCorreo(usuario.getCorreo());
+    		//obtener la lista de modulos a los que tiene acceso:
+    		List<SegAsignacion> listaAsignaciones=findAsignacionByUsuario(usuario.getIdSegUsuario());
+    		for(SegAsignacion asig:listaAsignaciones) {
+    			SegModulo modulo=asig.getSegModulo();
+    			loginDTO.getListaModulos().add(modulo);
+    		}
+    		return loginDTO;
+    	}
+    	mAuditoria.mostrarLog(getClass(), "login", "No coincide la clave "+idSegUsuario);
+    	throw new Exception("Error en credenciales");
+    }
+    
+    public LoginDTO loginCLIENTES(int idSegUsuario,String clave) throws Exception{
+    	if(ModelUtil.isEmpty(clave)) {
+    		mAuditoria.mostrarLog(getClass(), "login", "Debe indicar una clave "+idSegUsuario);
+    		throw new Exception("Debe indicar una clave");
+    	}
+    	SegUsuario usuario=(SegUsuario) mDAO.findById(SegUsuario.class, idSegUsuario);
+    	if(usuario==null) {
+    		mAuditoria.mostrarLog(getClass(), "login", "No existe usuario "+idSegUsuario);
+    		throw new Exception("Error en credenciales.");
+    	}
+    		
+    	if(usuario.getClave().equals(clave)) {
+    		if(usuario.getActivo()==false) {
+        		mAuditoria.mostrarLog(getClass(), "login", "Intento de login usuario desactivado "+idSegUsuario);
+        		throw new Exception("El usuario esta desactivado.");
+        	}
+    		mAuditoria.mostrarLog(getClass(), "login", "Login exitoso "+idSegUsuario);
+    		//crear DTO:
+    		LoginDTO loginDTO=new LoginDTO();
+    		loginDTO.setIdSegUsuario(usuario.getIdSegUsuario());
+    		loginDTO.setCorreo(usuario.getCorreo());
+    		//obtener la lista de modulos a los que tiene acceso:
+    		List<SegAsignacion> listaAsignaciones=findAsignacionByUsuario(usuario.getIdSegUsuario());
+    		for(SegAsignacion asig:listaAsignaciones) {
+    			SegModulo modulo=asig.getSegModulo();
+    			
+    			if (asig.getSegModulo().getNombreModulo() == "Clientes") {
+    				
+    				loginDTO.getListaModulos().add(modulo);
+    				
+				}
+    			
+    			
+    		}
+    		return loginDTO;
+    	}
+    	mAuditoria.mostrarLog(getClass(), "login", "No coincide la clave "+idSegUsuario);
+    	throw new Exception("Error en credenciales");
+    }
+    
     public void cerrarSesion(int idSegUsuario) {
     	mAuditoria.mostrarLog(getClass(), "cerrarSesion", "Cerrar sesión usuario: "+idSegUsuario);
     }
@@ -145,9 +270,18 @@ public class ManagerSeguridades {
     	return (SegUsuario) mDAO.findById(SegUsuario.class, idSegUsuario);
     }
     
+    
+    public void insertarUsuarioNuevo(SegUsuario nuevoUsuario) throws Exception {
+    	nuevoUsuario.setCodigo("n/a");
+    	mDAO.insertar(nuevoUsuario);
+    	asignarModulo(nuevoUsuario.getIdSegUsuario(), 4);
+    	
+    }
+    
     public void insertarUsuario(SegUsuario nuevoUsuario) throws Exception {
     	nuevoUsuario.setCodigo("n/a");
     	mDAO.insertar(nuevoUsuario);
+    
     }
     
     public void actualizarUsuario(SegUsuario edicionUsuario) throws Exception {
@@ -181,6 +315,24 @@ public class ManagerSeguridades {
     public List<SegModulo> findAllModulos(){
     	return mDAO.findAll(SegModulo.class, "nombreModulo");
     }
+    
+    
+    
+    public List<SegModulo> findAllModulos1(){
+    	
+    	
+    	String consulta="o.idSegModulo=4";
+		List<SegModulo> listaAsignaciones=mDAO.findWhere(SegModulo.class, consulta, null);
+		return listaAsignaciones;
+    	
+    	
+    }
+    
+    
+    
+    
+    
+    
     
     public SegModulo insertarModulo(SegModulo nuevoModulo) throws Exception {
     	SegModulo modulo=new SegModulo();
@@ -226,8 +378,44 @@ public class ManagerSeguridades {
     	mAuditoria.mostrarLog(getClass(), "asignarModulo", "Modulo "+idSegModulo+" asigando a usuario "+idSegUsuario);
     }
     
+    
+    public void asignarModuloNuevoCliente(int idSegUsuario,int idSegModulo) throws Exception{
+    	//Buscar los objetos primarios:
+    	SegUsuario usuario=(SegUsuario)mDAO.findById(SegUsuario.class, idSegUsuario);
+    	SegModulo modulo=(SegModulo)mDAO.findById(SegModulo.class, idSegModulo);
+    	
+    	
+    	if (modulo.getIdSegModulo() ==  4) {
+    		
+    		//crear la relacion:
+        	SegAsignacion asignacion=new SegAsignacion();
+        	asignacion.setSegModulo(modulo);
+        	asignacion.setSegUsuario(usuario);
+        	//guardar la asignacion:
+        	mDAO.insertar(asignacion);
+        	mAuditoria.mostrarLog(getClass(), "asignarModulo", "Modulo "+idSegModulo+" asigando a usuario "+idSegUsuario);
+			
+		}
+    	
+    
+    }
+    
     public void eliminarAsignacion(int idSegAsignacion) throws Exception {
     	mDAO.eliminar(SegAsignacion.class, idSegAsignacion);
+    }
+    
+    
+    public void eliminarAsignacionClientes(int idSegAsignacion) throws Exception {
+    	
+    	SegModulo modulo = new SegModulo();
+    	
+    	if ( modulo.getIdSegModulo() == 4) {
+    		
+    		mDAO.eliminar(SegAsignacion.class, idSegAsignacion);
+			
+		}
+    	
+    	
     }
 
 }

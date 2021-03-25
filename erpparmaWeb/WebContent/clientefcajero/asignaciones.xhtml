@@ -9,7 +9,7 @@
 		type="preRenderView"></f:event>
 </f:metadata>
 <h:head>
-	<title>Asignaciones</title>
+	<title>Cajeros</title>
 	<h:outputStylesheet library="css" name="minimarketdemo.css"></h:outputStylesheet>
 </h:head>
 <body>
@@ -68,7 +68,7 @@
 						<p:column width="40px">
 							<p:commandButton icon="pi pi-times-circle" title="eliminar"
 								styleClass="ui-button-danger" update="@form"
-								actionListener="#{beanSegAsignaciones.actionListenerEliminarAsignacionModulo(asig.idSegAsignacion)}"></p:commandButton>
+								actionListener="#{beanSegAsignaciones.actionListenerEliminarAsignacionModuloClientes(asig.idSegAsignacion)}"></p:commandButton>
 						</p:column>
 					</p:dataTable>
 				</h:panelGroup>
