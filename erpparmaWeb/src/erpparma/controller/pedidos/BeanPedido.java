@@ -78,32 +78,26 @@ public class BeanPedido implements Serializable {
 			DTOClientes client = new DTOClientes(user.getIdSegUsuario(), user.getCodigo(), user.getApellidos(),
 					user.getNombres(), user.getCorreo(), user.getActivo());
 			this.init();
-			System.out.println("INIT_________________________");
-			System.out.println("Obj: "+pedido.getParmaDetallePedidos().size());
-			System.out.println(".........................................................");
 
 			for (int i = 0; i < pedido.getParmaDetallePedidos().size(); i++) {
-				System.out.println("INICIO For_________________________");
 				ParmaFacturacionDetalle facturaDet = new ParmaFacturacionDetalle();
 				facturaDet.setCantidad(pedido.getParmaDetallePedidos().get(i).getCantidad());
-				System.out.println("CAntidad_________________________");
 				facturaDet.setParmaProducto(pedido.getParmaDetallePedidos().get(i).getParmaProducto());
 				mFacturacion.updteSubtotalItemFactura(facturaDet, pedido.getParmaDetallePedidos().get(i).getCantidad());
 				items.add(facturaDet);
 			}
 
-			System.out.println("fin For_________________________");
 			factura.setParmaFacturacionDetalles(items);
 			mFacturacion.calculateFacturaValues(factura);
 
 			mFacturacion.crearFactura(this.factura, client, this.login.getIdSegUsuario());
 
 			System.out.println("Factura creada correctamente");
-
-			JSFUtil.crearMensajeINFO("Pedido en proceso");
+			JSFUtil.crearMensajeINFO("Pedido procesado");
 
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
+			
 		}
 	}
 
