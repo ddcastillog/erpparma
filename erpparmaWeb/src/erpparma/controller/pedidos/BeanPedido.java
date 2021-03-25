@@ -79,6 +79,7 @@ public class BeanPedido implements Serializable {
 					user.getNombres(), user.getCorreo(), user.getActivo());
 			this.init();
 
+			
 			for (int i = 0; i < pedido.getParmaDetallePedidos().size(); i++) {
 				ParmaFacturacionDetalle facturaDet = new ParmaFacturacionDetalle();
 				facturaDet.setCantidad(pedido.getParmaDetallePedidos().get(i).getCantidad());

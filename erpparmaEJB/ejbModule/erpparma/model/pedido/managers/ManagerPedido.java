@@ -25,7 +25,7 @@ public class ManagerPedido {
 	private ManagerDAO mDAO;	
 
 	public ManagerPedido() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public List<ParmaPedido> findAllPedidos() {
