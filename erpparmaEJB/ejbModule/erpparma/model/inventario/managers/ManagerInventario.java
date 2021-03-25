@@ -192,17 +192,22 @@ public class ManagerInventario {
 				break;
 			}
 		}
-		if(transacion) {
+		if(transacion && parmaFacturacionDetalles.size()>0) {
 			GregorianCalendar cal = new GregorianCalendar();
 			long millis = cal.getTimeInMillis();			
 			ParmaAjuste egresos;
 			for (int i = 0; i < parmaFacturacionDetalles.size(); i++) {
+				int cantidad=parmaFacturacionDetalles.get(i).getParmaProducto().getParmaInventarios().get(0).getCantidad().intValue()
+						-parmaFacturacionDetalles.get(i).getCantidad().intValue();
+				ParmaInventario inventario=parmaFacturacionDetalles.get(i).getParmaProducto().getParmaInventarios().get(0);
+				inventario.setCantidad(cantidad);
 				egresos= new ParmaAjuste();
 				egresos.setCantidadAjuste(new BigDecimal(parmaFacturacionDetalles.get(i).getCantidad()));
 				egresos.setParmaProducto(parmaFacturacionDetalles.get(i).getParmaProducto());
 				egresos.setDescripcion("Venta");
 				egresos.setFechaAjuste(new Timestamp(millis));
 				egresos.setTipoAjuste(false);
+				mDAO.actualizar(inventario);
 				mDAO.insertar(egresos);
 				mAuditoria.mostrarLog(loginDTO, getClass(), "ajusteFactura",
 						"Realizo un egresso el usuario: " + loginDTO.getIdSegUsuario() + " al producto: "
