@@ -49,7 +49,7 @@ public class ParmaFactura implements Serializable {
 	private ThmEmpleado thmEmpleado;
 
 	//bi-directional many-to-one association to ParmaFacturacionDetalle
-	@OneToMany(mappedBy="parmaFactura", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="parmaFactura")
 	private List<ParmaFacturacionDetalle> parmaFacturacionDetalles;
 
 	public ParmaFactura() {
