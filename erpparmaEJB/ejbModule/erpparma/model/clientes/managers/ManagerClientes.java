@@ -320,6 +320,6 @@ public class ManagerClientes {
 		String where = "o.".concat(field).concat("=").concat("'").concat("venta").concat("'");
 		List<ParmaProducto> productos = this.mDAO.findWhere(ParmaProducto.class, where, "idParmaProducto");
 		return productos;
-	}
+	}	
 
 }
