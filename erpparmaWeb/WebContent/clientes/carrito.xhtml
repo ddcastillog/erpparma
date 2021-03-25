@@ -28,7 +28,7 @@
 		</p:menubar>
 	</h:form>
 
-	<h:form>
+	<h:form >  
 
 		<p:panel header="Datos de los productos">
 
@@ -43,14 +43,13 @@
 
 						<h:outputText value="Precio" />
 						<h:outputText value="#{listado.precioProducto}" />
-					
+						
 						<h:outputText value="Cantidad" />
-						<p:spinner value="#{bean}" 
-							 />
-
+							 <p:spinner value="#{beanDetallePedido.cantidad}" min="1" max="1000" /> 
 						<p:commandButton value="Agregar" update="@form"
 							icon="pi pi-shopping-cart"
-							actionListener="#{beanCarrito.actionListenerAgregarCarrito(listado,beanCarrito.cantidadcarrito)}"></p:commandButton>
+							actionListener="#{beanCarrito.actionListenerAgregarCarrito(listado)}"></p:commandButton>
+
 
 					</h:panelGrid>
 
@@ -58,33 +57,32 @@
 
 			</p:dataGrid>
 
-
 			<p:dataTable value="#{beanCarrito.carrito}" var="c">
 
 				<p:column headerText="Cantidad">
-					<h:outputText value="#{beanCarrito.cantidad}" />
+					<h:outputText value="#{beanCarrito.cantidadcarrito}" />
 				</p:column>
 
 				<p:column headerText="Nombre">
 					<h:outputText value="#{c.nombreProducto}" />
 				</p:column>
-				
-				
+
+
 
 				<p:column headerText="Precio">
 					<h:outputText value="#{c.precioProducto}" />
-					
+
 					<f:facet name="footer">
 						<h:outputText value="Suma Total" />
 					</f:facet>
-			
-					
+
+
 
 				</p:column>
-				
+
 				<p:column headerText="Suma Parcial">
 					<h:outputText value="#{beanCarrito.totalparcial}" />
-					
+
 					<f:facet name="footer">
 
 						<h:outputText value="#{beanCarrito.totalcarrito}">
@@ -92,10 +90,10 @@
 						</h:outputText>
 
 					</f:facet>
-					
+
 				</p:column>
-				
-				
+
+
 
 				<p:column>
 
@@ -110,7 +108,7 @@
 			<div align="center">
 
 				<p:commandButton value="Enviar Pedido " icon="pi pi-shopping-cart"
-					update="@form">
+					update="@form" actionListener="#{beanDetallePedido.actionListenerCreaDestino()}">
 					<p:confirm header="Confirmación" message="Desea enviar pedido"
 						icon="pi pi-shopping-cart"></p:confirm>
 

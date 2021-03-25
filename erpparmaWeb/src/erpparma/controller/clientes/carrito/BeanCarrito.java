@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import erpparma.model.clientes.dto.DTOProducto;
@@ -40,6 +41,11 @@ public class BeanCarrito implements Serializable {
 	private List<ParmaInventario> inventario;
 	
 	private double totalcarrito;
+	
+	
+	@Inject
+	
+	private BeanDetallePedido detallepedidos;
 
 	@PostConstruct
 	public void inicializar() {
@@ -91,11 +97,14 @@ public class BeanCarrito implements Serializable {
 		this.cantidad = cantidad;
 	}
 
-	public void actionListenerAgregarCarrito(ParmaProducto producto, int cantidadproducto) {
+	public void actionListenerAgregarCarrito(ParmaProducto producto) {
 
-		carrito = mClientes.agregardatosCarrito(carrito, producto,cantidadproducto);
+	//	carrito = mClientes.agregardatosCarrito(carrito, producto);
+		//int cantidad = detallepedidos.getCantidad();
 		
-		totalparcial = mClientes.CalcularTotalparcial(producto, cantidadproducto);
+		carrito = mClientes.agregardatosCarritoCantidad(carrito, producto,cantidadcarrito);
+		
+		totalparcial = mClientes.CalcularTotalparcial(producto, cantidadcarrito);
 
 		totalcarrito = mClientes.CalcularTotal(carrito);
 
@@ -105,6 +114,16 @@ public class BeanCarrito implements Serializable {
 	
 	
 	
+	
+	
+	public BeanDetallePedido getDetallepedidos() {
+		return detallepedidos;
+	}
+
+	public void setDetallepedidos(BeanDetallePedido detallepedidos) {
+		this.detallepedidos = detallepedidos;
+	}
+
 	public void actionListenerAgregarCarrito1(ParmaAjuste producto) {
 
 		cantidad = mClientes.agregardatosCarrito1(cantidad, producto);

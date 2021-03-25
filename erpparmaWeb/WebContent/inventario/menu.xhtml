@@ -12,11 +12,16 @@
 <body>
 	<h:form>
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="/menu" />
-			<p:menuitem value="Productos" icon="pi pi-briefcase" action="#{beanParmaProducto.actionCargarMenuProductos()}"/>
-			<p:menuitem value="Tipo Producto" icon="pi pi-briefcase" action="#{beanParmaTipoProducto.actionCargarMenuTipoProducto()}"/>
-			<p:menuitem value="Ajustes" icon="pi pi-step-forward" action="#{beanParmaAjustes.actionCargarMenuAjustes()}"/>	
-			<p:menuitem value="Stock" icon="pi pi-book" action="#{beanParmaInventario.actionCargarMenuInventario()}"/>						
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="/menu?faces-redirect=true" />
+			<p:menuitem value="Productos" icon="pi pi-briefcase"
+				action="#{beanParmaProducto.actionCargarMenuProductos()}" />
+			<p:menuitem value="Tipo Producto" icon="pi pi-briefcase"
+				action="#{beanParmaTipoProducto.actionCargarMenuTipoProducto()}" />
+			<p:menuitem value="Ajustes" icon="pi pi-step-forward"
+				action="#{beanParmaAjustes.actionCargarMenuAjustes()}" />
+			<p:menuitem value="Stock" icon="pi pi-book"
+				action="#{beanParmaInventario.actionCargarMenuInventario()}" />
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -26,7 +31,11 @@
 				</p:menuButton>
 			</f:facet>
 		</p:menubar>
-		<p:staticMessage severity="info" summary="Módulo de inventario"></p:staticMessage>
+		<div class="card">
+		<h1 align="center">Productos con mayor cantidad en Stock</h1>
+			<p:pieChart model="#{beanSegLogin.pieModel}"
+				style="width: 100%; height: 400px;" />
+		</div>
 	</h:form>
 	<div></div>
 </body>

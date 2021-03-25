@@ -24,22 +24,26 @@
 
 	<div align="center">
 		<h:form>
-			<p:panel style="width:50%">
-				<p:staticMessage severity="info" summary="SISTEMA PARMAERP BIENVENIDO"
-					style="width: 100%" />
+			<p:panel style="width:100%">
+				<p:staticMessage severity="info"
+					summary="SISTEMA PARMAERP BIENVENIDO" style="width: 100%" />
 				<p:dataView value="#{beanSegLogin.loginDTO.listaModulos}"
-					var="modulo" layout="grid" 
-					emptyMessage="No tiene módulos asignados. Consulte al administrador.">
+					var="modulo" layout="grid"
+					emptyMessage="No tiene módulos asignados. Consulte al administrador."
+					gridIcon="pi pi-th-large">
 					<p:dataViewGridItem>
 						<p:commandLink
 							action="#{beanSegLogin.actionMenu(modulo.rutaAcceso)}">
-							<p:panelGrid columns="1">
-								<h:outputText value="#{modulo.nombreModulo}" />
-								<h:outputText value="#{modulo.rutaAcceso}" />
-								<i class="pi pi-slack" style="font-size: 2rem"></i>
+							<p:panelGrid columns="1" style="width:80%">
+								<div align="center">
+									<p>#{modulo.nombreModulo}</p>
+								</div>
+								<div align="center">
+									<i class="pi pi-slack" style="font-size: 5.1rem"></i>
+								</div>
 							</p:panelGrid>
 						</p:commandLink>
-					</p:dataViewGridItem>
+					</p:dataViewGridItem>					
 				</p:dataView>
 			</p:panel>
 		</h:form>

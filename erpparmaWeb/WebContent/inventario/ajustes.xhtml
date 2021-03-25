@@ -14,7 +14,8 @@
 <body>
 	<h:form id="form1">
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="menu?faces-redirect=true"></p:menuitem>
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -26,52 +27,111 @@
 			</f:facet>
 		</p:menubar>
 	</h:form>
-	<h:form id="form2">
-		<p:messages>
-			<p:autoUpdate></p:autoUpdate>
-		</p:messages>
-		<p:panel header="Reguistro de Ajustes" toggleable="true"
-			collapsed="true">
-			<p:panelGrid columns="2">
-				<p:outputLabel for="@next" value="Producto" />
-				<p:autoComplete id="producto"
-					value="#{beanParmaAjustes.nombreProducto}" forceSelection="true"
-					completeMethod="#{beanParmaAjustes.completeText}" required="true"
-					scrollHeight="250" />
-				<h:outputText value="Cantidad" />
-				<p:inputNumber value="#{beanParmaAjustes.newtAjuste.cantidadAjuste}"
-					minValue="0"></p:inputNumber>
-				<h:outputText value="Ingreso/Egreso" />
-				<p:selectBooleanCheckbox
-					value="#{beanParmaAjustes.newtAjuste.tipoAjuste}"></p:selectBooleanCheckbox>
-				<p:commandButton value="Insertar" icon="pi pi-save"
-					actionListener="#{beanParmaAjustes.actionInsertarAjustes()}"
-					update="@form,:form3"></p:commandButton>
-			</p:panelGrid>
-		</p:panel>
-	</h:form>
-	<h:form id="form3">
-		<p:panel>
-			<p:dataTable value="#{beanParmaAjustes.listaAjustes}" var="a"
-				emptyMessage="No hay registros ">
-				<p:column headerText="ID">
-					<h:outputText value="#{a.idParmaAjuste}" />
-				</p:column>
-				<p:column headerText="Producto">
-					<h:outputText value="#{a.parmaProducto.nombreProducto}" />
-				</p:column>
-				<p:column headerText="Tipo de Producto">
-					<h:outputText
-						value="#{i.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
-				</p:column>
-				<p:column headerText="Cantidad">
-					<h:outputText value="#{a.cantidadAjuste}" />
-				</p:column>
-				<p:column headerText="Ingreso/Egreso">
-					<h:outputText value="#{a.tipoAjuste}" />
-				</p:column>
-			</p:dataTable>
-		</p:panel>
-	</h:form>
+	<p:tabView id="tabView">
+		<p:tab title="INGRESOS">
+			<h:form id="form2">
+				<p:messages>
+					<p:autoUpdate></p:autoUpdate>
+				</p:messages>
+				<p:panel header="Reguistro de Ingresos" toggleable="true"
+					collapsed="true">
+					<p:panelGrid columns="2">
+						<p:outputLabel for="@next" value="Producto" />
+						<p:autoComplete id="producto"
+							value="#{beanParmaAjustes.nombreProducto}" forceSelection="true"
+							completeMethod="#{beanParmaAjustes.completeText}" required="true"
+							scrollHeight="250" />
+						<h:outputText value="Descripción" />
+						<p:inputText value="#{beanParmaAjustes.newtAjuste.descripcion}"></p:inputText>
+						<h:outputText value="Cantidad" />
+						<p:inputNumber
+							value="#{beanParmaAjustes.newtAjuste.cantidadAjuste}"
+							minValue="0"></p:inputNumber>
+						<p:commandButton value="Insertar" icon="pi pi-save"
+							actionListener="#{beanParmaAjustes.actionInsertarAjustes(true)}"
+							update=":tabView:form3"></p:commandButton>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+			<h:form id="form3">
+				<p:panel>
+					<p:dataTable value="#{beanParmaAjustes.listaIngresos}" var="a"
+						emptyMessage="No hay registros " paginator="true" rows="5">
+						<p:column headerText="ID">
+							<h:outputText value="#{a.idParmaAjuste}" />
+						</p:column>
+						<p:column headerText="Producto">
+							<h:outputText value="#{a.parmaProducto.nombreProducto}" />
+						</p:column>
+						<p:column headerText="Descripción">
+							<h:outputText value="#{a.descripcion}" />
+						</p:column>
+						<p:column headerText="Tipo de Producto">
+							<h:outputText
+								value="#{a.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
+						</p:column>
+						<p:column headerText="Cantidad">
+							<h:outputText value="#{a.cantidadAjuste}" />
+						</p:column>
+						<p:column headerText="Fecha">
+							<h:outputText value="#{a.fechaAjuste}" />
+						</p:column>						
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</p:tab>
+		<p:tab title="EGRESOS">
+			<h:form id="form4">
+				<p:messages>
+					<p:autoUpdate></p:autoUpdate>
+				</p:messages>
+				<p:panel header="Reguistro de Egresos" toggleable="true"
+					collapsed="true">
+					<p:panelGrid columns="2">
+						<p:outputLabel for="@next" value="Producto" />
+						<p:autoComplete id="producto"
+							value="#{beanParmaAjustes.nombreProducto}" forceSelection="true"
+							completeMethod="#{beanParmaAjustes.completeText}" required="true"
+							scrollHeight="250" />
+						<h:outputText value="Descripción" />
+						<p:inputText value="#{beanParmaAjustes.newtAjuste.descripcion}"></p:inputText>
+						<h:outputText value="Cantidad" />
+						<p:inputNumber
+							value="#{beanParmaAjustes.newtAjuste.cantidadAjuste}"
+							minValue="0"></p:inputNumber>
+						<p:commandButton value="Insertar" icon="pi pi-save"
+							actionListener="#{beanParmaAjustes.actionInsertarAjustes(false)}"
+							update=":tabView:form5"></p:commandButton>
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+			<h:form id="form5">
+				<p:panel>
+					<p:dataTable value="#{beanParmaAjustes.listaEgresos}" var="a"
+						emptyMessage="No hay registros " paginator="true" rows="5">
+						<p:column headerText="ID">
+							<h:outputText value="#{a.idParmaAjuste}" />
+						</p:column>
+						<p:column headerText="Producto">
+							<h:outputText value="#{a.parmaProducto.nombreProducto}" />
+						</p:column>
+						<p:column headerText="Descripción">
+							<h:outputText value="#{a.descripcion}" />
+						</p:column>
+						<p:column headerText="Tipo de Producto">
+							<h:outputText
+								value="#{a.parmaProducto.parmaTipoProducto.nombreTipoProducto}" />
+						</p:column>
+						<p:column headerText="Cantidad">
+							<h:outputText value="#{a.cantidadAjuste}" />
+						</p:column>
+						<p:column headerText="Fecha">
+							<h:outputText value="#{a.fechaAjuste}" />
+						</p:column>						
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</p:tab>
+	</p:tabView>
 </body>
 </html>

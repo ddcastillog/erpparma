@@ -12,9 +12,15 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.pie.PieChartDataSet;
+import org.primefaces.model.charts.pie.PieChartModel;
+
 import erpparma.controller.JSFUtil;
+import erpparma.controller.seguridades.BeanSegLogin;
 import erpparma.model.auditoria.managers.ManagerAuditoria;
 import erpparma.model.core.entities.AudBitacora;
 import erpparma.model.core.entities.ParmaAjuste;
@@ -28,10 +34,14 @@ import erpparma.model.inventario.managers.ManagerInventario;
 public class BeanParmaAjustes implements Serializable {
 	@EJB
 	private ManagerInventario mInventario;
-	private List<ParmaAjuste> listaAjustes;
+	private List<ParmaAjuste> listaEgresos;
+	private List<ParmaAjuste> listaIngresos;
 	private List<ParmaProducto> listaProductos;
 	private ParmaAjuste newtAjuste;
 	private String nombreProducto;
+	@Inject
+	private BeanSegLogin beanSegLogin;
+	
 
 	public BeanParmaAjustes() {
 
@@ -39,19 +49,23 @@ public class BeanParmaAjustes implements Serializable {
 
 	@PostConstruct
 	public void inicializacion() {
-		newtAjuste = new ParmaAjuste();
+		newtAjuste = new ParmaAjuste();		
 	}
+	
 
 	public String actionCargarMenuAjustes() {
-		listaAjustes = mInventario.findAllParmaAjuste();		
-		return "ajustes";
+		listaIngresos=mInventario.findAllParmaAjuste(true);
+		listaEgresos=mInventario.findAllParmaAjuste(false);
+		return "ajustes?faces-redirect=true";
 	}
 
-	public void actionInsertarAjustes() throws Exception {
-		try {
-			newtAjuste.setParmaProducto(mInventario.findProductoByName(nombreProducto));
-			mInventario.insertarParmaAjuste(newtAjuste);
-			listaAjustes = mInventario.findAllParmaAjuste();
+	public void actionInsertarAjustes(boolean tipoAjuste) throws Exception {
+		try {				
+			newtAjuste.setParmaProducto(mInventario.findProductoByName(nombreProducto));			
+			newtAjuste.setTipoAjuste(tipoAjuste);
+			mInventario.insertarParmaAjuste(newtAjuste,beanSegLogin.getLoginDTO());
+			listaIngresos=mInventario.findAllParmaAjuste(true);
+			listaEgresos=mInventario.findAllParmaAjuste(false);
 			newtAjuste = new ParmaAjuste();
 			JSFUtil.crearMensajeINFO("Ajuste Creado");
 		} catch (Exception e) {
@@ -71,17 +85,12 @@ public class BeanParmaAjustes implements Serializable {
 				.collect(Collectors.toList());
 	}
 
-	public List<ParmaAjuste> getListaAjustes() {
-		return listaAjustes;
-	}
+	
 
 	public ParmaAjuste getNewtAjuste() {
 		return newtAjuste;
 	}
-
-	public void setListaAjustes(List<ParmaAjuste> listaAjustes) {
-		this.listaAjustes = listaAjustes;
-	}
+	
 
 	public void setNewtAjuste(ParmaAjuste newtAjuste) {
 		this.newtAjuste = newtAjuste;
@@ -101,6 +110,22 @@ public class BeanParmaAjustes implements Serializable {
 
 	public void setNombreProducto(String nombreProducto) {
 		this.nombreProducto = nombreProducto;
+	}
+
+	public List<ParmaAjuste> getListaEgresos() {
+		return listaEgresos;
+	}
+
+	public List<ParmaAjuste> getListaIngresos() {
+		return listaIngresos;
+	}
+
+	public void setListaEgresos(List<ParmaAjuste> listaEgresos) {
+		this.listaEgresos = listaEgresos;
+	}
+
+	public void setListaIngresos(List<ParmaAjuste> listaIngresos) {
+		this.listaIngresos = listaIngresos;
 	}
 
 

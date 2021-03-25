@@ -14,7 +14,7 @@
 <body>
 	<h:form id="form1">
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu"></p:menuitem>
+			<p:menuitem value="Regresar" icon="pi pi-home" action="menu?faces-redirect=true"></p:menuitem>
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -45,7 +45,7 @@
 	<h:form id="form3">
 		<p:panel>
 			<p:dataTable value="#{beanParmaTipoProducto.listaTipoProductos}"
-				var="t" emptyMessage="No hay registros ">
+				var="t" emptyMessage="No hay registros " paginator="true" rows="5">
 				<p:column headerText="ID">
 					<h:outputText value="#{t.idParmaTipoProducto}" />
 				</p:column>
@@ -56,13 +56,7 @@
 					<p:commandButton title="editar" icon="pi pi-pencil"
 						actionListener="#{beanParmaTipoProducto.seteditTipoProducto(t)}"
 						update=":formEdicion" oncomplete="PF('dlgEdicion').show();">
-					</p:commandButton>
-					<p:commandButton title="eliminar" icon="pi pi-times-circle"
-						actionListener="#{beanParmaTipoProducto.actionlisternerEliminarTipoProducto(t.idParmaTipoProducto)}"
-						update="@form,:form3">
-						<p:confirm header="Confirmación" message="Desea eliminar"
-							icon="pi pi-exclamation-triangle"></p:confirm>
-					</p:commandButton>
+					</p:commandButton>					
 				</p:column>
 			</p:dataTable>
 		</p:panel>
@@ -85,12 +79,6 @@
 					update="@form,:form3"></p:commandButton>
 			</h:panelGrid>
 		</h:form>
-	</p:dialog>
-	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-		<p:commandButton value="SI" type="button"
-			styleClass="ui-confirmdialog-yes" icon="pi pi-check"></p:commandButton>
-		<p:commandButton value="No" type="button"
-			styleClass="ui-confirmdialog-no" icon="pi pi-times"></p:commandButton>
-	</p:confirmDialog>
+	</p:dialog>	
 </body>
 </html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
+		type="preRenderView"></f:event>
+</f:metadata>
+<h:head>
+	<h:outputStylesheet library="css" name="primeflex.min.css"
+		target="head" />
+	<h:outputStylesheet library="css" name="facturacion.css" target="head" />
+</h:head>
+<body>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<h:form>
+		<p:menubar>
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="clientes?faces-redirect=true" />
+			<p:menuitem value="Clientes" action="clientes?faces-redirect=true"
+				icon="pi pi-users" />
+			<p:menuitem action="facturar?faces-redirect=true" value="Facturar"
+				icon="pi pi-money-bill" />
+			<f:facet name="options">
+				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
+					icon="pi pi-user">
+					<p:menuitem value="Perfil" icon="pi pi-cog"></p:menuitem>
+					<p:menuitem value="Cerrar sesión" icon="pi pi-sign-out"
+						action="#{beanSegLogin.actionCerrarSesion()}"></p:menuitem>
+				</p:menuButton>
+			</f:facet>
+		</p:menubar>
+	</h:form>
+	<div class="card margin">
+		<h:form>
+			<p:panel header="DETALLE DE CLIENTE">
+				<p:panelGrid columns="2">
+					<p:outputLabel styleClass="letterbold" for="codigo"
+						style="width:100px" value="Código" />
+					<h:outputText id="codigo"
+						value="#{beanFacturacion.clienteSelected.codigo}" />
+					<p:outputLabel styleClass="letterbold" for="cliente"
+						style="width:100px" value="Cliente" />
+					<h:outputText id="cliente"
+						value="#{beanFacturacion.clienteSelected}" />
+					<p:outputLabel styleClass="letterbold" for="correo"
+						style="width:100px" value="Correo" />
+					<h:outputText id="correo"
+						value="#{beanFacturacion.clienteSelected.correo}" />
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+
+		<h:form id="formFacturas">
+			<p:dataTable value="#{beanFacturacion.clienteSelected.facturas}"
+				var="f" emptyMessage="No hay registros aún." rowIndexVar="index">
+				<p:column headerText="ID">
+					<h:outputText value="#{f.idFactura}" />
+				</p:column>
+				<p:column headerText="Fecha">
+					<h:outputText value="#{f.fechaFactura}" />
+				</p:column>
+				<p:column headerText="Subtotal">
+					<h:outputText value="#{f.subtotal}" />
+				</p:column>
+				<p:column headerText="Descuento">
+					<h:outputText value="#{f.descuento}" />
+				</p:column>
+				<p:column headerText="IVA">
+					<h:outputText value="#{f.iva}" />
+				</p:column>
+				<p:column headerText="Pago total">
+					<h:outputText value="#{f.total}" />
+				</p:column>
+				<p:column headerText="OPCIONES">
+					<p:commandButton icon="pi pi-eye"
+						action="#{beanFacturacion.loadItems(f, index)}"
+						oncomplete="PF('manageDetalle').show()" title="Ver detalle"
+						update=":formdetalle" styleClass="ui-button-secondary" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</div>
+
+	<p:dialog id="dlg2" header="Detalle de factura" width="600"
+		showEffect="fade" modal="true" widgetVar="manageDetalle"
+		responsive="true">
+		<h:form id="formdetalle">
+			<p:messages>
+				<p:autoUpdate />
+			</p:messages>
+			<p:dataTable value="#{beanFacturacion.items}" var="d"
+				emptyMessage="No hay registros aún." rowIndexVar="index">
+				<p:column headerText="#">
+					<h:outputText value="#{index + 1}" />
+				</p:column>
+
+				<p:column headerText="Producto">
+					<h:outputText value="#{d.parmaProducto.nombreProducto}" />
+				</p:column>
+				<p:column headerText="Cantidad">
+					<h:outputText value="#{d.cantidad}" />
+				</p:column>
+				<p:column headerText="IVA">
+					<h:outputText value="#{d.parmaProducto.ivaProducto}" />
+				</p:column>
+				<p:column headerText="Subtotal">
+					<h:outputText value="#{d.subtotal}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+
+</body>
+</html>

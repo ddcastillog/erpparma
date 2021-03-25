@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 
 import erpparma.model.clientes.dto.DTOProducto;
 import erpparma.model.core.entities.ParmaAjuste;
+import erpparma.model.core.entities.ParmaDetallePedido;
 import erpparma.model.core.entities.ParmaInventario;
 import erpparma.model.core.entities.ParmaProducto;
 import erpparma.model.core.managers.ManagerDAO;
@@ -61,7 +62,6 @@ public class ManagerClientes {
 	public List<ParmaProducto> generardatosProductos() {
 
 		List<ParmaProducto> producto = new ArrayList<ParmaProducto>();
-	
 
 		producto = (minventario.findAllParmaProducto());
 
@@ -139,9 +139,10 @@ public class ManagerClientes {
 	
 	
 
-	public List<ParmaProducto> agregardatosCarrito(List<ParmaProducto> carrito, ParmaProducto p, int cantidad) {
+	public List<ParmaProducto> agregardatosCarrito(List<ParmaProducto> carrito, ParmaProducto p) {
 
 		ParmaInventario parmai = new ParmaInventario();
+		ParmaDetallePedido detalle = new ParmaDetallePedido();
 		
 		if (carrito == null)
 
@@ -153,6 +154,29 @@ public class ManagerClientes {
 			return carrito;
 
 	}
+	
+	
+	
+
+	public List<ParmaProducto> agregardatosCarritoCantidad(List<ParmaProducto> carrito, ParmaProducto p,int cantidad) {
+
+		ParmaInventario parmai = new ParmaInventario();
+		ParmaDetallePedido detalle = new ParmaDetallePedido();
+		
+		if (carrito == null)
+
+			carrito = new ArrayList<ParmaProducto>();
+			
+			carrito.add(cantidad,p);
+			 
+
+			return carrito;
+
+	}
+	
+	
+	
+	
 	
 	public List<ParmaAjuste> agregardatosCarrito1(List<ParmaAjuste> carrito, ParmaAjuste p) {
 		

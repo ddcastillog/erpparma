@@ -19,6 +19,8 @@ public class ParmaInventario implements Serializable {
 	@Column(name="id_inventario", unique=true, nullable=false)
 	private Integer idInventario;
 
+	private Boolean activo;
+
 	@Column(nullable=false)
 	private Integer cantidad;
 
@@ -36,6 +38,14 @@ public class ParmaInventario implements Serializable {
 
 	public void setIdInventario(Integer idInventario) {
 		this.idInventario = idInventario;
+	}
+
+	public Boolean getActivo() {
+		return this.activo;
+	}
+
+	public void setActivo(Boolean activo) {
+		this.activo = activo;
 	}
 
 	public Integer getCantidad() {

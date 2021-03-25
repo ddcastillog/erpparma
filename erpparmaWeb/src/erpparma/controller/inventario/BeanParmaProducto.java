@@ -25,11 +25,12 @@ import erpparma.model.inventario.managers.ManagerInventario;
 public class BeanParmaProducto implements Serializable {
 	@EJB
 	private ManagerInventario mInventario;
-	private List<ParmaProducto> listaProductos;
+	private List<ParmaProducto> listaProductosMateriaPrima;
+	private List<ParmaProducto> listaProductosActivos;
+	private List<ParmaProducto> listaProductosVentas;
 	private List<ParmaTipoProducto> listaTipoProductos;
 	private ParmaProducto newProducto;
-	private ParmaProducto editProducto;
-	private Integer idParmaTipoProducto;
+	private ParmaProducto editProducto;	
 
 	public BeanParmaProducto() {
 
@@ -41,14 +42,18 @@ public class BeanParmaProducto implements Serializable {
 		editProducto=new ParmaProducto();
 	}
 	public String actionCargarMenuProductos() {
-		listaProductos= mInventario.findAllParmaProducto();
 		listaTipoProductos=mInventario.findAllParmaTipoProducto();
-		return "productos";
+		listaProductosVentas= mInventario.findAllParmaProducto(listaTipoProductos.get(0).getIdParmaTipoProducto());
+		listaProductosMateriaPrima= mInventario.findAllParmaProducto(listaTipoProductos.get(1).getIdParmaTipoProducto());	
+		listaProductosActivos= mInventario.findAllParmaProducto(listaTipoProductos.get(2).getIdParmaTipoProducto());		
+		return "productos?faces-redirect=true";
 	}
-	public void actionInsertarProducto() throws Exception {	
+	public void actionInsertarProducto(Integer idParmaTipoProducto) throws Exception {	
 		try {
-		mInventario.insertarParmaProducto(newProducto, idParmaTipoProducto);
-		listaProductos= mInventario.findAllParmaProducto();
+		mInventario.insertarParmaProducto(newProducto,listaTipoProductos.get(idParmaTipoProducto).getIdParmaTipoProducto());
+		listaProductosVentas= mInventario.findAllParmaProducto(listaTipoProductos.get(0).getIdParmaTipoProducto());
+		listaProductosMateriaPrima= mInventario.findAllParmaProducto(listaTipoProductos.get(1).getIdParmaTipoProducto());	
+		listaProductosActivos= mInventario.findAllParmaProducto(listaTipoProductos.get(2).getIdParmaTipoProducto());
 		newProducto=new ParmaProducto();		
 		JSFUtil.crearMensajeINFO("Producto Creado");
 		} catch (Exception e) {
@@ -59,8 +64,10 @@ public class BeanParmaProducto implements Serializable {
 
 	public void actionActualizarProductos() throws Exception {	
 		try {
-		mInventario.actualizarParmaProducto(editProducto, idParmaTipoProducto);
-		listaProductos= mInventario.findAllParmaProducto();
+		mInventario.actualizarParmaProducto(editProducto,editProducto.getParmaTipoProducto().getIdParmaTipoProducto());
+		listaProductosVentas= mInventario.findAllParmaProducto(listaTipoProductos.get(0).getIdParmaTipoProducto());
+		listaProductosMateriaPrima= mInventario.findAllParmaProducto(listaTipoProductos.get(1).getIdParmaTipoProducto());	
+		listaProductosActivos= mInventario.findAllParmaProducto(listaTipoProductos.get(2).getIdParmaTipoProducto());
 		editProducto=new ParmaProducto();		
 		JSFUtil.crearMensajeINFO("Actualizar Productos");
 		} catch (Exception e) {
@@ -68,23 +75,12 @@ public class BeanParmaProducto implements Serializable {
 			e.printStackTrace();
 		}		
 	}
-	public void actionlisternerEliminarProducto(Integer id) {
-		try {
-			mInventario.eliminarParmaProducto(id);
-			listaProductos= mInventario.findAllParmaProducto();
-			JSFUtil.crearMensajeINFO("Producto Eliminado");			
-		} catch (Exception e) {
-			JSFUtil.crearMensajeERROR(e.getMessage());
-			e.printStackTrace();
-		}
-	}
+	
 	public void seteditProducto(ParmaProducto producto) {
 		this.editProducto=producto;		
 	}
 
-	public List<ParmaProducto> getListaProductos() {
-		return listaProductos;
-	}
+	
 
 	public ParmaProducto getNewProducto() {
 		return newProducto;
@@ -92,15 +88,7 @@ public class BeanParmaProducto implements Serializable {
 
 	public ParmaProducto getEditProducto() {
 		return editProducto;
-	}
-
-	public Integer getIdParmaTipoProducto() {
-		return idParmaTipoProducto;
-	}
-
-	public void setListaProductos(List<ParmaProducto> listaProductos) {
-		this.listaProductos = listaProductos;
-	}
+	}	
 
 	public void setNewProducto(ParmaProducto newProducto) {
 		this.newProducto = newProducto;
@@ -108,11 +96,7 @@ public class BeanParmaProducto implements Serializable {
 
 	public void setEditProducto(ParmaProducto editProducto) {
 		this.editProducto = editProducto;
-	}
-
-	public void setIdParmaTipoProducto(Integer idParmaTipoProducto) {
-		this.idParmaTipoProducto = idParmaTipoProducto;
-	}
+	}	
 
 	public List<ParmaTipoProducto> getListaTipoProductos() {
 		return listaTipoProductos;
@@ -120,6 +104,30 @@ public class BeanParmaProducto implements Serializable {
 
 	public void setListaTipoProductos(List<ParmaTipoProducto> listaTipoProductos) {
 		this.listaTipoProductos = listaTipoProductos;
+	}
+
+	public List<ParmaProducto> getListaProductosMateriaPrima() {
+		return listaProductosMateriaPrima;
+	}
+
+	public List<ParmaProducto> getListaProductosActivos() {
+		return listaProductosActivos;
+	}
+
+	public List<ParmaProducto> getListaProductosVentas() {
+		return listaProductosVentas;
+	}
+
+	public void setListaProductosMateriaPrima(List<ParmaProducto> listaProductosMateriaPrima) {
+		this.listaProductosMateriaPrima = listaProductosMateriaPrima;
+	}
+
+	public void setListaProductosActivos(List<ParmaProducto> listaProductosActivos) {
+		this.listaProductosActivos = listaProductosActivos;
+	}
+
+	public void setListaProductosVentas(List<ParmaProducto> listaProductosVentas) {
+		this.listaProductosVentas = listaProductosVentas;
 	}
 	
 	

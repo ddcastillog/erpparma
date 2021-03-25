@@ -6,37 +6,56 @@
 	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-	<title>Login</title>
+	<title>ACCESSO PARMA ERP</title>
+	<h:outputStylesheet library="css" name="primeflex.min.css"
+		target="head" />
 </h:head>
 <body>
-	<div align="center">
+
+	
 		<p:messages>
 			<p:autoUpdate />
 		</p:messages>
-		<h:form>
-			<p:panel>
-				<p:panelGrid columns="2">
-					<h:outputText value="Id de usuario:" />
-					<p:inputText value="#{beanSegLogin.idSegUsuario}" />
-					<h:outputText value="Clave:" />
-					<p:password value="#{beanSegLogin.clave}" />
-					<p:commandButton value="Login"
-						action="#{beanSegLogin.actionLogin()}" icon="pi pi-key"></p:commandButton>
-				</p:panelGrid>
-			</p:panel>
-		</h:form>
-		<h:form>
-			<p:panel>
-				<p:panelGrid columns="2">
-					<h:outputText value="Inicializar datos" />
-					<p:commandButton value="Inicializar"
-						actionListener="#{beanSegLogin.actionListenerInicialiarDemo()}"
-						icon="pi pi-close"></p:commandButton>
-				</p:panelGrid>
-			</p:panel>
+		
+		
+	
 
-		</h:form>
 
+	<div class="ui-g p-d-flex p-jc-center p-ai-center p-pt-6">
+
+		<div class="ui-g-4">
+			<p:growl>
+				<p:autoUpdate></p:autoUpdate>
+			</p:growl>
+			<h:form>
+				<p:panel class="p-text-center" header="INICIAR SESIÓN PARMA ERP">
+					<div class="ui-g ui-fluid">
+						<div class="ui-g-12">
+							<div class="ui-inputgroup">
+								<span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+								<p:inputText value="#{beanSegLogin.idSegUsuario}"
+									placeholder="Ingrese su usuario" />
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<div class="ui-inputgroup">
+								<span class="ui-inputgroup-addon"><i class="pi pi-key"></i></span>
+								<p:password value="#{beanSegLogin.clave}"
+									placeholder="Ingrese su contraseña" />
+							</div>
+						</div>
+						<div class="ui-g-12">
+							<p:commandButton value="Acceder"
+								action="#{beanSegLogin.actionLogin()}">
+							</p:commandButton>
+						</div>
+					</div>
+				</p:panel>
+
+			</h:form>
+		</div>
+	</div>
+	
 		<h:form>
 			<p:panel>
 				<p:panelGrid columns="2">
@@ -48,7 +67,6 @@
 			</p:panel>
 
 		</h:form>
-
-	</div>
+	
 </body>
 </html>

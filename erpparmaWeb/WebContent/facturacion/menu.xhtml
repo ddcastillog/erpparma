@@ -8,18 +8,20 @@
 	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
 		type="preRenderView"></f:event>
 </f:metadata>
-<h:head>
-	<title>Pedidos</title>
-</h:head>
+<h:head></h:head>
 <body>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
 	<h:form>
 		<p:menubar>
 			<p:menuitem value="Regresar" icon="pi pi-home"
 				action="/menu?faces-redirect=true" />
-			<p:menuitem value="Ver Pedidos" icon="pi pi-users"
-				action="#{beanPedido.actionMenuPedidos()}" />
-				
-			
+			<p:menuitem value="Clientes" icon="pi pi-users"
+				action="clientes?faces-redirect=true" />
+			<p:menuitem value="Facturación" icon="pi pi-money-bill"
+				action="facturar?faces-redirect=true" />
+
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -29,7 +31,8 @@
 				</p:menuButton>
 			</f:facet>
 		</p:menubar>
-		<p:staticMessage severity="info" summary="Módulo de Pedidos"></p:staticMessage>
-	</h:form>	
+		<p:staticMessage severity="info" summary="Módulo de Facturación"></p:staticMessage>
+	</h:form>
+	<div></div>
 </body>
 </html>
