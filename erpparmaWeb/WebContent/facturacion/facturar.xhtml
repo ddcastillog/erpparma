@@ -19,12 +19,14 @@
 	</p:growl>
 	<h:form>
 		<p:menubar>
-			<p:menuitem value="Regresar" icon="pi pi-home" action="menu?faces-redirect=true" />
+			<p:menuitem value="Regresar" icon="pi pi-home"
+				action="menu?faces-redirect=true" />
 			<p:menuitem actionListener="#{beanFacturacion.openNewCliente()}"
 				value="Crear cliente" icon="pi pi-user-plus"
 				oncomplete="PF('manageProductDialog').show()"
 				update=":formnuevo,:dlg1" />
-			<p:menuitem value="Vuelto" icon="pi pi-money-bill" />
+			<p:menuitem value="Vuelto" oncomplete="PF('manageVuelto').show()"
+				icon="pi pi-money-bill" />
 			<f:facet name="options">
 				<p:menuButton value="#{beanSegLogin.loginDTO.correo}"
 					icon="pi pi-user">
@@ -79,7 +81,7 @@
 						<div class="ui-g-3">
 							<p:commandButton
 								actionListener="#{beanFacturar.actionAgregarCarro()}"
-								value="Agregar" update="@form, :carro, :subtotal" />
+								value="Agregar" update="@form, :carro, :subtotal, :formchange" />
 						</div>
 					</div>
 
@@ -107,11 +109,11 @@
 						<h:outputText value="$ #{i.parmaProducto.precioProducto}" />
 					</p:column>
 					<p:column headerText="Cantidad">
-						<p:spinner id="basic" value="#{i.cantidad}"
+						<p:spinner id="basic" min="1" value="#{i.cantidad}"
 							valueChangeListener="#{beanFacturar.updateCantidad}">
 							<p:ajax event="change"
 								listener="#{beanFacturar.refreshCantidad(index)}"
-								update="@form, :subtotal" />
+								update="@form, :subtotal, :formchange" />
 						</p:spinner>
 
 					</p:column>
@@ -121,8 +123,8 @@
 					<p:column headerText="Quitar">
 						<p:commandButton icon="pi pi-trash"
 							actionListener="#{beanFacturar.deleteProducto(index)}"
-							update="@form, :subtotal" styleClass="ui-button-danger"
-							title="quitar" />
+							update="@form, :subtotal, :formchange"
+							styleClass="ui-button-danger" title="quitar" />
 					</p:column>
 				</p:dataTable>
 
@@ -153,6 +155,37 @@
 
 
 	</div>
+
+	<p:dialog id="dlg2" header="Calcular vuelto" width="400"
+		showEffect="fade" modal="true" widgetVar="manageVuelto"
+		responsive="true">
+		<h:form id="formchange">
+			<p:messages>
+				<p:autoUpdate />
+			</p:messages>
+			<p:outputPanel class="ui-fluid">
+				<div class="p-field">
+					<p:outputLabel for="@next" value="Valor de pago: " />
+					<p:spinner id="step" placeholder="Ingrese la cantidad con la pago"
+						stepFactor="0.25" value="#{beanFacturar.payValue}" min="0"
+						max="100" required="true" />
+				</div>
+				<div class="p-field">
+					<p:commandButton value="Calcular"
+						actionListener="#{beanFacturar.calculateChange()}"
+						styleClass="ui-button-warning" update="change_, @form" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="@next" value="Vuelto a entregar: " />
+					<h:outputText id="change_" style="font-size: 30px"
+						styleClass="letterbold" value="#{beanFacturar.changeValue}" />
+				</div>
+			</p:outputPanel>
+		</h:form>
+
+	</p:dialog>
+
+
 	<p:dialog id="dlg1" header="Nuevo Cliente" width="600"
 		showEffect="fade" modal="true" widgetVar="manageProductDialog"
 		responsive="true">

@@ -57,7 +57,11 @@
 
 		<h:form id="formFacturas">
 			<p:dataTable value="#{beanFacturacion.clienteSelected.facturas}"
-				var="f" emptyMessage="No hay registros aún." rowIndexVar="index">
+				var="f" rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+				rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+				emptyMessage="No hay registros aún." rowIndexVar="index">
 				<p:column headerText="ID">
 					<h:outputText value="#{f.idFactura}" />
 				</p:column>

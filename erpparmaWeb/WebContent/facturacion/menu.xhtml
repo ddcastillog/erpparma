@@ -31,8 +31,12 @@
 				</p:menuButton>
 			</f:facet>
 		</p:menubar>
-		<p:staticMessage severity="info" summary="Módulo de Facturación"></p:staticMessage>
+		<div class="card">
+			<h1 align="center">Clientes con facturas más valoradas</h1>
+			<p:pieChart model="#{beanSegLogin.pieModel2}"
+				style="width: 100%; height: 400px;" />
+		</div>
 	</h:form>
-	<div></div>
+
 </body>
 </html>

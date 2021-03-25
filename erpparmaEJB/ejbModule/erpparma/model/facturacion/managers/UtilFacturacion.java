@@ -11,7 +11,7 @@ import erpparma.model.core.entities.ParmaFacturacionDetalle;
 public class UtilFacturacion {
 
 	public static double MINIMO_PARA_FACTURAR_PARMA = 10;
-	public static double IVA_PARMA = 0.14;
+	public static double IVA_PARMA = 0.12;
 	public static double DESCUENTO_PARMA = 0.10;
 
 	public static ArrayList<ParmaFacturacionDetalle> getNewListDetalleFactura() {
