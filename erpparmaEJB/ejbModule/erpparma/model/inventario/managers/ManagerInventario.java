@@ -1,5 +1,6 @@
 package erpparma.model.inventario.managers;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,12 +14,15 @@ import javax.ejb.Stateless;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
+import erpparma.model.auditoria.managers.ManagerAuditoria;
 import erpparma.model.core.entities.ParmaAjuste;
+import erpparma.model.core.entities.ParmaFacturacionDetalle;
 import erpparma.model.core.entities.ParmaInventario;
 import erpparma.model.core.entities.ParmaProducto;
 import erpparma.model.core.entities.ParmaTipoProducto;
 import erpparma.model.core.entities.ThmEmpleado;
 import erpparma.model.core.managers.ManagerDAO;
+import erpparma.model.seguridades.dtos.LoginDTO;
 
 /**
  * Session Bean implementation class ManagerInventario
@@ -28,6 +32,8 @@ import erpparma.model.core.managers.ManagerDAO;
 public class ManagerInventario {
 	@EJB
 	private ManagerDAO mDAO;
+	@EJB
+	private ManagerAuditoria mAuditoria;
 
 	public ManagerInventario() {
 		// TODO Auto-generated constructor stub
@@ -104,12 +110,12 @@ public class ManagerInventario {
 	}
 
 	// Tipo de producto
-	public void insertarParmaAjuste(ParmaAjuste ajuste) throws Exception {
+	public void insertarParmaAjuste(ParmaAjuste ajuste, LoginDTO loginDTO) throws Exception {
 		GregorianCalendar cal = new GregorianCalendar();
 		long millis = cal.getTimeInMillis();
 		ajuste.setFechaAjuste(new Timestamp(millis));
 		List<ParmaInventario> inventario = mDAO.findWhere(ParmaInventario.class,
-				"o.parmaProducto='" + ajuste.getParmaProducto().getIdParmaProducto() + "'", null);
+				"o.parmaProducto=" + ajuste.getParmaProducto().getIdParmaProducto(), null);
 		try {
 			ParmaInventario inve = inventario.get(0);
 			if (ajuste.getTipoAjuste()) {
@@ -117,29 +123,26 @@ public class ManagerInventario {
 				inve.setCantidad(cantidad);
 				mDAO.actualizar(inve);
 				mDAO.insertar(ajuste);
+				mAuditoria.mostrarLog(loginDTO, getClass(), "insertarParmaAjuste",
+						"Realizo un ingreso el usuario: " + loginDTO.getIdSegUsuario() + " al producto: "
+								+ ajuste.getParmaProducto().getIdParmaProducto());
 			} else {
 				int cantidad = inve.getCantidad().intValue() - ajuste.getCantidadAjuste().intValue();
+				
 				if (cantidad >= 0) {
 					inve.setCantidad(cantidad);
 					mDAO.actualizar(inve);
 					mDAO.insertar(ajuste);
+					mAuditoria.mostrarLog(loginDTO, getClass(), "insertarParmaAjuste",
+							"Realizo un egreso el usuario: " + loginDTO.getIdSegUsuario() + " al producto: "
+									+ ajuste.getParmaProducto().getIdParmaProducto());					
 				} else {
+					System.out.println(cantidad);
 					throw new Exception("No hay tantos productos para el egreso");
 				}
-
 			}
-
 		} catch (Exception e) {
-			if (ajuste.getTipoAjuste()) {
-				ParmaInventario newinve = new ParmaInventario();
-				newinve.setParmaProducto(ajuste.getParmaProducto());
-				newinve.setCantidad(ajuste.getCantidadAjuste().intValue());
-				newinve.setActivo(true);
-				mDAO.insertar(newinve);
-				mDAO.insertar(ajuste);
-			} else {
-				throw new Exception("No hay este producto para el egresso");
-			}
+			throw new Exception("No hay tantos productos para el egreso");
 		}
 	}
 
@@ -171,6 +174,42 @@ public class ManagerInventario {
 			updateinve.setActivo(true);
 		}
 		mDAO.actualizar(updateinve);
+	}
+
+	public List<ParmaInventario> stockVenta() {
+		List<ParmaTipoProducto> parmaTipoProductos = mDAO.findAll(ParmaTipoProducto.class);
+		return findAllInventario(parmaTipoProductos.get(0).getIdParmaTipoProducto());
+
+	}
+
+	public boolean ajusteFactura(List<ParmaFacturacionDetalle> parmaFacturacionDetalles,LoginDTO loginDTO)throws Exception {
+		boolean transacion=true;
+		for (int i = 0; i < parmaFacturacionDetalles.size(); i++) {
+			int cantidad=parmaFacturacionDetalles.get(i).getParmaProducto().getParmaInventarios().get(0).getCantidad().intValue()
+					-parmaFacturacionDetalles.get(i).getCantidad().intValue();
+			if(!(cantidad>=0)) {
+				transacion= false;
+				break;
+			}
+		}
+		if(transacion) {
+			GregorianCalendar cal = new GregorianCalendar();
+			long millis = cal.getTimeInMillis();			
+			ParmaAjuste egresos;
+			for (int i = 0; i < parmaFacturacionDetalles.size(); i++) {
+				egresos= new ParmaAjuste();
+				egresos.setCantidadAjuste(new BigDecimal(parmaFacturacionDetalles.get(i).getCantidad()));
+				egresos.setParmaProducto(parmaFacturacionDetalles.get(i).getParmaProducto());
+				egresos.setDescripcion("Venta");
+				egresos.setFechaAjuste(new Timestamp(millis));
+				egresos.setTipoAjuste(false);
+				mDAO.insertar(egresos);
+				mAuditoria.mostrarLog(loginDTO, getClass(), "ajusteFactura",
+						"Realizo un egresso el usuario: " + loginDTO.getIdSegUsuario() + " al producto: "
+								+ egresos.getParmaProducto().getIdParmaProducto());
+			}
+		}
+		return transacion;
 	}
 
 	public List<ParmaInventario> mayorcantodadInventario() {

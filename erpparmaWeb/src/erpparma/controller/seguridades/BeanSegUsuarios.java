@@ -5,11 +5,13 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import erpparma.controller.JSFUtil;
 import erpparma.model.core.entities.SegUsuario;
 import erpparma.model.seguridades.managers.ManagerSeguridades;
+import erpparma.controller.seguridades.BeanSegLogin;
 
 @Named
 @SessionScoped
@@ -20,7 +22,8 @@ public class BeanSegUsuarios implements Serializable {
 	private List<SegUsuario> listaUsuarios;
 	private SegUsuario nuevoUsuario;
 	private SegUsuario edicionUsuario;
-	
+	@Inject
+	private BeanSegLogin beanSegLogin;
 	
 	public BeanSegUsuarios() {
 		
@@ -68,7 +71,7 @@ public class BeanSegUsuarios implements Serializable {
 	
 	public void actionListenerActualizarEdicionUsuario() {
 		try {
-			managerSeguridades.actualizarUsuario(edicionUsuario);
+			managerSeguridades.actualizarUsuario(beanSegLogin.getLoginDTO(),edicionUsuario);
 			listaUsuarios=managerSeguridades.findAllUsuarios();
 			JSFUtil.crearMensajeINFO("Usuario actualizado.");
 		} catch (Exception e) {

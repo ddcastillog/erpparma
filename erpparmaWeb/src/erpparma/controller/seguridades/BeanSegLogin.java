@@ -5,11 +5,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.pie.PieChartDataSet;
@@ -30,6 +32,7 @@ import erpparma.model.seguridades.managers.ManagerSeguridades;
 public class BeanSegLogin implements Serializable {
 	private int idSegUsuario;
 	private String clave;
+	private String direccionIP;
 	private LoginDTO loginDTO;
 	@EJB
 	private ManagerSeguridades mSeguridades;
@@ -42,10 +45,20 @@ public class BeanSegLogin implements Serializable {
 	public BeanSegLogin() {
 		
 	}
+	@PostConstruct
+	public void inicializar() {
+		HttpServletRequest req=(HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		String agente=req.getHeader("user-agent");
+		String ipAddress=req.getHeader("X-FORWARDED-FOR");
+		if(ipAddress==null) {
+			ipAddress=req.getRemoteAddr();
+		}
+		direccionIP=ipAddress;
+	}
 	
 	public String actionLogin() {
 		try {
-			loginDTO=mSeguridades.login(idSegUsuario, clave);
+			loginDTO=mSeguridades.login(idSegUsuario, clave,direccionIP);
 			return "menu?faces-redirect=true";
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
@@ -175,6 +188,14 @@ public class BeanSegLogin implements Serializable {
 
 	public void setPieModel(PieChartModel pieModel) {
 		this.pieModel = pieModel;
+	}
+
+	public String getDireccionIP() {
+		return direccionIP;
+	}
+
+	public void setDireccionIP(String direccionIP) {
+		this.direccionIP = direccionIP;
 	}
 	
 }

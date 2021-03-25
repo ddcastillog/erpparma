@@ -8,6 +8,7 @@ import erpparma.model.core.entities.SegModulo;
 public class LoginDTO {
 	private int idSegUsuario;
 	private String correo;
+	private String direccionIP;
 	private List<SegModulo> listaModulos;
 	public LoginDTO() {
 		listaModulos=new ArrayList<SegModulo>();
@@ -29,6 +30,12 @@ public class LoginDTO {
 	}
 	public void setListaModulos(List<SegModulo> listaModulos) {
 		this.listaModulos = listaModulos;
+	}
+	public String getDireccionIP() {
+		return direccionIP;
+	}
+	public void setDireccionIP(String direccionIP) {
+		this.direccionIP = direccionIP;
 	}
 	
 }

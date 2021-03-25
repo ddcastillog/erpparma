@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.model.charts.ChartData;
@@ -19,6 +20,7 @@ import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
 
 import erpparma.controller.JSFUtil;
+import erpparma.controller.seguridades.BeanSegLogin;
 import erpparma.model.auditoria.managers.ManagerAuditoria;
 import erpparma.model.core.entities.AudBitacora;
 import erpparma.model.core.entities.ParmaAjuste;
@@ -37,7 +39,8 @@ public class BeanParmaAjustes implements Serializable {
 	private List<ParmaProducto> listaProductos;
 	private ParmaAjuste newtAjuste;
 	private String nombreProducto;
-	
+	@Inject
+	private BeanSegLogin beanSegLogin;
 	
 
 	public BeanParmaAjustes() {
@@ -58,9 +61,9 @@ public class BeanParmaAjustes implements Serializable {
 
 	public void actionInsertarAjustes(boolean tipoAjuste) throws Exception {
 		try {				
-			newtAjuste.setParmaProducto(mInventario.findProductoByName(nombreProducto));
+			newtAjuste.setParmaProducto(mInventario.findProductoByName(nombreProducto));			
 			newtAjuste.setTipoAjuste(tipoAjuste);
-			mInventario.insertarParmaAjuste(newtAjuste);
+			mInventario.insertarParmaAjuste(newtAjuste,beanSegLogin.getLoginDTO());
 			listaIngresos=mInventario.findAllParmaAjuste(true);
 			listaEgresos=mInventario.findAllParmaAjuste(false);
 			newtAjuste = new ParmaAjuste();
