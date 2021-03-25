@@ -16,7 +16,9 @@ import erpparma.model.clientes.dto.DTOProducto;
 import erpparma.model.core.entities.ParmaAjuste;
 import erpparma.model.core.entities.ParmaDetallePedido;
 import erpparma.model.core.entities.ParmaInventario;
+import erpparma.model.core.entities.ParmaPedido;
 import erpparma.model.core.entities.ParmaProducto;
+import erpparma.model.core.entities.SegUsuario;
 import erpparma.model.core.managers.ManagerDAO;
 import erpparma.model.inventario.managers.ManagerInventario;
 
@@ -32,32 +34,21 @@ public class ManagerClientes {
 	@EJB
 	private ManagerDAO mDAO;
 
-	
-
-	
-
 	/**
 	 * Default constructor.
 	 */
 	public ManagerClientes() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+
 	public List<ParmaProducto> generardatosProductos3() {
-		
+
 		String field = "parmaTipoProducto.nombreTipoProducto";
 		String where = "o.".concat(field).concat("=").concat("'").concat("ventas").concat("'");
 		List<ParmaProducto> productos = mDAO.findWhere(ParmaProducto.class, where, "idParmaProducto");
 		return productos;
 
-
 	}
-	
-	
-	
-	
-	
 
 	public List<ParmaProducto> generardatosProductos() {
 
@@ -68,8 +59,7 @@ public class ManagerClientes {
 		return producto;
 
 	}
-	
-	
+
 	public List<ParmaAjuste> generardatosProductos1() {
 
 		List<ParmaAjuste> producto = new ArrayList<ParmaAjuste>();
@@ -79,9 +69,7 @@ public class ManagerClientes {
 		return producto;
 
 	}
-	
-	
-	
+
 	public List<ParmaInventario> generardatosProductos2() {
 
 		List<ParmaInventario> producto = new ArrayList<ParmaInventario>();
@@ -91,127 +79,144 @@ public class ManagerClientes {
 		return producto;
 
 	}
-	
-	
-	
-	//METODO PARA INGRESAR AL CARRITO 
-	
+
+	// METODO PARA INGRESAR AL CARRITO
+
 	// Tipo de producto
-		public void insertarParmaAjuste(ParmaAjuste ajuste) throws Exception {
-			GregorianCalendar cal = new GregorianCalendar();
-			long millis = cal.getTimeInMillis();
-			ajuste.setFechaAjuste(new Timestamp(millis));
-			List<ParmaInventario> inventario = mDAO.findWhere(ParmaInventario.class,
-					"o.parmaProducto='" + ajuste.getParmaProducto().getIdParmaProducto() + "'", null);
-			try {			
-				ParmaInventario inve = inventario.get(0);
-				if (ajuste.getTipoAjuste()) {
-					int cantidad = inve.getCantidad().intValue() + ajuste.getCantidadAjuste().intValue();
+	public void insertarParmaAjuste(ParmaAjuste ajuste) throws Exception {
+		GregorianCalendar cal = new GregorianCalendar();
+		long millis = cal.getTimeInMillis();
+		ajuste.setFechaAjuste(new Timestamp(millis));
+		List<ParmaInventario> inventario = mDAO.findWhere(ParmaInventario.class,
+				"o.parmaProducto='" + ajuste.getParmaProducto().getIdParmaProducto() + "'", null);
+		try {
+			ParmaInventario inve = inventario.get(0);
+			if (ajuste.getTipoAjuste()) {
+				int cantidad = inve.getCantidad().intValue() + ajuste.getCantidadAjuste().intValue();
+				inve.setCantidad(cantidad);
+			} else {
+				int cantidad = inve.getCantidad().intValue() - ajuste.getCantidadAjuste().intValue();
+				if (cantidad >= 0) {
 					inve.setCantidad(cantidad);
-				} else {
-					int cantidad = inve.getCantidad().intValue() - ajuste.getCantidadAjuste().intValue();
-					if (cantidad >= 0) {
-						inve.setCantidad(cantidad);
-						mDAO.actualizar(inve);
-						mDAO.insertar(ajuste);
-					} else {
-						throw new Exception("No hay tantos productos para el egreso");
-					}
-
-				}
-
-			} catch (Exception e) {
-				if (ajuste.getTipoAjuste()) {
-					ParmaInventario newinve = new ParmaInventario();
-					newinve.setParmaProducto(ajuste.getParmaProducto());
-					newinve.setCantidad(ajuste.getCantidadAjuste().intValue());
-					mDAO.insertar(newinve);
+					mDAO.actualizar(inve);
 					mDAO.insertar(ajuste);
 				} else {
-					throw new Exception("No hay este producto para el egresso");
+					throw new Exception("No hay tantos productos para el egreso");
 				}
+
+			}
+
+		} catch (Exception e) {
+			if (ajuste.getTipoAjuste()) {
+				ParmaInventario newinve = new ParmaInventario();
+				newinve.setParmaProducto(ajuste.getParmaProducto());
+				newinve.setCantidad(ajuste.getCantidadAjuste().intValue());
+				mDAO.insertar(newinve);
+				mDAO.insertar(ajuste);
+			} else {
+				throw new Exception("No hay este producto para el egresso");
 			}
 		}
-	
-	
-	
-	
-	
-	
+	}
 
 	public List<ParmaProducto> agregardatosCarrito(List<ParmaProducto> carrito, ParmaProducto p) {
 
 		ParmaInventario parmai = new ParmaInventario();
 		ParmaDetallePedido detalle = new ParmaDetallePedido();
-		
+
 		if (carrito == null)
 
 			carrito = new ArrayList<ParmaProducto>();
-			
-			carrito.add(p);
-			 
 
-			return carrito;
+		carrito.add(p);
+
+		return carrito;
 
 	}
-	
-	
-	
 
-	public List<ParmaProducto> agregardatosCarritoCantidad(List<ParmaProducto> carrito, ParmaProducto p,int cantidad) {
+	public List<ParmaDetallePedido> agregardatosCarritoCantidad(List<ParmaDetallePedido> carrito, ParmaProducto p
+		) {
 
-		ParmaInventario parmai = new ParmaInventario();
 		ParmaDetallePedido detalle = new ParmaDetallePedido();
-		
-		if (carrito == null)
 
-			carrito = new ArrayList<ParmaProducto>();
+		if (carrito == null) {
+
+			carrito = new ArrayList<ParmaDetallePedido>();
+
+			detalle.setCantidad(0);
+			detalle.setParmaProducto(p);
+
+			carrito.add(detalle);
+
+		} else {
 			
-			carrito.add(cantidad,p);
-			 
-
-			return carrito;
-
-	}
-	
-	
-	
-	
-	
-	public List<ParmaAjuste> agregardatosCarrito1(List<ParmaAjuste> carrito, ParmaAjuste p) {
-		
-		List<ParmaInventario> inventario = mDAO.findWhere(ParmaInventario.class,
-				"o.parmaProducto='" + p.getParmaProducto().getIdParmaProducto() + "'", null);
-	
-				ParmaInventario inve = inventario.get(0);
+			int posicion = buscarproductoenCarrito(carrito, p);
+			
+			if (posicion != -1) {
 				
-				if (carrito == null) 
+				carrito.get(posicion).setCantidad(carrito.get(posicion).getCantidad());
+				
+			} else {
+				
+				detalle.setCantidad(0);
+				detalle.setParmaProducto(p);
 
-					carrito = new ArrayList<ParmaAjuste>();
-				
-					carrito.add(p);
-					
-					System.out.println("SE AÑADIO AL CARRITO");
-	
-					int cantidad = inve.getCantidad().intValue() - p.getCantidadAjuste().intValue();
-					
-					System.out.println("SE HIZO LA RESTA ");
-					
-					inve.setCantidad(cantidad);
-					
-					System.out.println("SE cambio el Dato ");
-		
-		
-					return carrito;
-				
+				carrito.add(detalle);
+
 
 			}
 
-	
+		}
 
-	
 
-	public List<ParmaProducto> eliminardatosCarrito(List<ParmaProducto> carrito, int idproducto) {
+		return carrito;
+
+	}
+
+	public int buscarproductoenCarrito(List<ParmaDetallePedido> carrito, ParmaProducto producto) {
+
+		for (int i = 0; i < carrito.size(); i++) {
+
+			if (carrito.get(i).getParmaProducto().getIdParmaProducto() == producto.getIdParmaProducto()) {
+
+				return i;
+
+			}
+
+		}
+
+		return -1;
+
+	}
+
+	public List<ParmaAjuste> agregardatosCarrito1(List<ParmaAjuste> carrito, ParmaAjuste p) {
+
+		List<ParmaInventario> inventario = mDAO.findWhere(ParmaInventario.class,
+				"o.parmaProducto='" + p.getParmaProducto().getIdParmaProducto() + "'", null);
+
+		ParmaInventario inve = inventario.get(0);
+
+		if (carrito == null)
+
+			carrito = new ArrayList<ParmaAjuste>();
+
+		carrito.add(p);
+
+		System.out.println("SE AÑADIO AL CARRITO");
+
+		int cantidad = inve.getCantidad().intValue() - p.getCantidadAjuste().intValue();
+
+		System.out.println("SE HIZO LA RESTA ");
+
+		inve.setCantidad(cantidad);
+
+		System.out.println("SE cambio el Dato ");
+
+		return carrito;
+
+	}
+
+	public List<ParmaDetallePedido> eliminardatosCarrito(List<ParmaDetallePedido> carrito, int idproducto) {
 
 		if (carrito == null)
 
@@ -219,9 +224,9 @@ public class ManagerClientes {
 
 		int i = 0;
 
-		for (ParmaProducto producto : carrito) {
+		for (ParmaDetallePedido producto : carrito) {
 
-			if (producto.getIdParmaProducto() == idproducto) {
+			if (producto.getParmaProducto().getIdParmaProducto() == idproducto) {
 
 				carrito.remove(i);
 				break;
@@ -237,6 +242,30 @@ public class ManagerClientes {
 	}
 	
 	
+	public void insertarPedido (List<ParmaDetallePedido> carrito , ParmaPedido pedido, Integer idSegUsuario) throws Exception {
+		
+		
+		SegUsuario usuario = (SegUsuario)mDAO.findById(SegUsuario.class, idSegUsuario);
+		
+		pedido.setSegUsuario(usuario);
+		
+		mDAO.insertar(pedido);
+		
+		for (int i = 0; i < carrito.size(); i++) {
+			
+			carrito.get(i).setParmaPedido(pedido);
+			mDAO.insertar(carrito.get(i));
+			
+			
+			
+		}
+		
+		
+		
+	}
+	
+	
+
 	public List<ParmaAjuste> eliminardatosCarrito1(List<ParmaAjuste> carrito, int idproducto) {
 
 		if (carrito == null)
@@ -261,7 +290,6 @@ public class ManagerClientes {
 		return carrito;
 
 	}
-	
 
 	public double CalcularTotal(List<ParmaProducto> carrito) {
 
@@ -274,29 +302,24 @@ public class ManagerClientes {
 		return suma;
 
 	}
-	
-	
 
-	public double CalcularTotalparcial(ParmaProducto producto , int cantidad) {
-		
-		
+	public double CalcularTotalparcial(ParmaProducto producto, int cantidad) {
+
 		double respuesta = 0;
 
-			respuesta = producto.getPrecioProducto().doubleValue()*cantidad;
+		respuesta = producto.getPrecioProducto().doubleValue() * cantidad;
 
 		return respuesta;
 
 	}
-	
-	
+
 	/// Codigos ESpeciales
-	
+
 	public List<ParmaProducto> findAllProductosVenta() {
 		String field = "parmaTipoProducto.nombreTipoProducto";
 		String where = "o.".concat(field).concat("=").concat("'").concat("venta").concat("'");
 		List<ParmaProducto> productos = this.mDAO.findWhere(ParmaProducto.class, where, "idParmaProducto");
 		return productos;
 	}
-
 
 }

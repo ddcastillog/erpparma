@@ -5,7 +5,10 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-
+<f:metadata>
+	<f:event listener="#{beanSegLogin.actionVerificarLogin()}"
+		type="preRenderView"></f:event>
+</f:metadata>
 
 
 <h:head>
@@ -44,8 +47,7 @@
 						<h:outputText value="Precio" />
 						<h:outputText value="#{listado.precioProducto}" />
 						
-						<h:outputText value="Cantidad" />
-							 <p:spinner value="#{beanDetallePedido.cantidad}" min="1" max="1000" /> 
+						 
 						<p:commandButton value="Agregar" update="@form"
 							icon="pi pi-shopping-cart"
 							actionListener="#{beanCarrito.actionListenerAgregarCarrito(listado)}"></p:commandButton>
@@ -63,46 +65,27 @@
 			<p:dataTable value="#{beanCarrito.carrito}" var="c">
 
 				<p:column headerText="Cantidad">
-					<h:outputText value="#{beanCarrito.cantidadcarrito}" />
+				
+				 <p:spinner value="#{c.cantidad}" min="1" max="1000" />
+				 
 				</p:column>
 
 				<p:column headerText="Nombre">
-					<h:outputText value="#{c.nombreProducto}" />
+					<h:outputText value="#{c.parmaProducto.nombreProducto}" />
 				</p:column>
 
 
 
 				<p:column headerText="Precio">
-					<h:outputText value="#{c.precioProducto}" />
-
-					<f:facet name="footer">
-						<h:outputText value="Suma Total" />
-					</f:facet>
-
-
+					<h:outputText value="#{c.parmaProducto.precioProducto}" />
 
 				</p:column>
-
-				<p:column headerText="Suma Parcial">
-					<h:outputText value="#{beanCarrito.totalparcial}" />
-
-					<f:facet name="footer">
-
-						<h:outputText value="#{beanCarrito.totalcarrito}">
-							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
-						</h:outputText>
-
-					</f:facet>
-
-				</p:column>
-
-
 
 				<p:column>
 
 					<p:commandButton value="Eliminar producto" update="@form"
 						icon="pi pi-trash"
-						actionListener="#{beanCarrito.actionListenereliminarCarrito(c)}">
+						actionListener="#{beanCarrito.actionListenereliminarCarrito(c.parmaProducto)}">
 					</p:commandButton>
 
 				</p:column>
@@ -111,7 +94,8 @@
 			<div align="center">
 
 				<p:commandButton value="Enviar Pedido " icon="pi pi-shopping-cart"
-					update="@form">
+					update="@form" actionListener="#{beanCarrito.insertarPedido()}" >
+					
 					<p:confirm header="Confirmación" message="Desea enviar pedido"
 						icon="pi pi-shopping-cart"></p:confirm>
 

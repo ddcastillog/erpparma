@@ -2,6 +2,7 @@ package erpparma.controller.clientes.carrito;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -10,10 +11,13 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import erpparma.controller.seguridades.BeanSegLogin;
 import erpparma.model.clientes.dto.DTOProducto;
 import erpparma.model.clientes.managers.ManagerClientes;
 import erpparma.model.core.entities.ParmaAjuste;
+import erpparma.model.core.entities.ParmaDetallePedido;
 import erpparma.model.core.entities.ParmaInventario;
+import erpparma.model.core.entities.ParmaPedido;
 import erpparma.model.core.entities.ParmaProducto;
 import erpparma.model.inventario.managers.ManagerInventario;
 
@@ -28,7 +32,7 @@ public class BeanCarrito implements Serializable {
 
 	private List<ParmaProducto> listaproductos;
 	private List<ParmaProducto> listaproductos1;
-	private List<ParmaProducto> carrito;
+	private List<ParmaDetallePedido> carrito;
 	private List<ParmaAjuste> cantidad;
 	private List<ParmaAjuste> LISTAcantidad;
 	private List<DTOProducto> dtoproducto;
@@ -37,7 +41,7 @@ public class BeanCarrito implements Serializable {
 	
 	private int cantidadcarrito;
 	
-	private double totalparcial;
+	private double subtotalcarrito;
 	
 	private List<ParmaInventario> inventario;
 	
@@ -46,9 +50,11 @@ public class BeanCarrito implements Serializable {
 	
 	@Inject
 	
-	
-	
 	private BeanDetallePedido detallepedidos;
+	
+	@Inject
+	
+	private BeanSegLogin usuario;
 	
 	
 	@EJB
@@ -80,6 +86,8 @@ public class BeanCarrito implements Serializable {
 	public void setDtoproducto1(DTOProducto dtoproducto1) {
 		this.dtoproducto1 = dtoproducto1;
 	}
+	
+	
 
 	public List<ParmaInventario> getInventario() {
 		return inventario;
@@ -105,18 +113,39 @@ public class BeanCarrito implements Serializable {
 		this.cantidad = cantidad;
 	}
 
-	public void actionListenerAgregarCarrito(ParmaProducto producto) {
+	public void actionListenerAgregarCarrito(ParmaProducto producto ) {
 
-	//	carrito = mClientes.agregardatosCarrito(carrito, producto);
-		//int cantidad = detallepedidos.getCantidad();
-		
-		carrito = mClientes.agregardatosCarritoCantidad(carrito, producto,cantidadcarrito);
-		
-		totalparcial = mClientes.CalcularTotalparcial(producto, cantidadcarrito);
 
-		totalcarrito = mClientes.CalcularTotal(carrito);
+		carrito = mClientes.agregardatosCarritoCantidad(carrito, producto);
+		
+		//subtotalcarrito = mClientes.CalcularTotalparcial(producto, cantidadcarrito);
+
+		//totalcarrito = mClientes.CalcularTotal(carrito);
 
 	}
+	
+	
+	public void insertarPedido ( ) {
+		
+		ParmaPedido pedido = new ParmaPedido();
+		
+		pedido.setFechaPedido(new Date());
+		pedido.setEstadoPedido(true);
+		
+		try {
+			mClientes.insertarPedido(carrito, pedido, usuario.getIdSegUsuario());
+			carrito = null;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+	}
+	
+	
 	
 	
 	
@@ -136,7 +165,7 @@ public class BeanCarrito implements Serializable {
 
 		cantidad = mClientes.agregardatosCarrito1(cantidad, producto);
 
-		totalcarrito = mClientes.CalcularTotal(getCarrito());
+		//totalcarrito = mClientes.CalcularTotal(getCarrito());
 
 	}
 	
@@ -147,7 +176,7 @@ public class BeanCarrito implements Serializable {
 
 		carrito = mClientes.eliminardatosCarrito(carrito, producto.getIdParmaProducto());
 
-		totalcarrito = mClientes.CalcularTotal(carrito);
+		//totalcarrito = mClientes.CalcularTotal(carrito);
 
 	}
 	
@@ -155,7 +184,7 @@ public class BeanCarrito implements Serializable {
 
 		cantidad = mClientes.eliminardatosCarrito1(cantidad, producto.getParmaProducto().getIdParmaProducto());
 
-		totalcarrito = mClientes.CalcularTotal(carrito);
+	//	totalcarrito = mClientes.CalcularTotal(carrito);
 
 	}
 	
@@ -198,12 +227,14 @@ public class BeanCarrito implements Serializable {
 	
 	
 
-	public double getTotalparcial() {
-		return totalparcial;
+	
+
+	public double getSubtotalcarrito() {
+		return subtotalcarrito;
 	}
 
-	public void setTotalparcial(double totalparcial) {
-		this.totalparcial = totalparcial;
+	public void setSubtotalcarrito(double subtotalcarrito) {
+		this.subtotalcarrito = subtotalcarrito;
 	}
 
 	public void setTotalcarrito(double totalcarrito) {
@@ -220,13 +251,17 @@ public class BeanCarrito implements Serializable {
 		this.cantidadcarrito = cantidadcarrito;
 	}
 
-	public List<ParmaProducto> getCarrito() {
+	
+
+	public List<ParmaDetallePedido> getCarrito() {
 		return carrito;
 	}
 
-	public void setCarrito(List<ParmaProducto> carrito) {
+	public void setCarrito(List<ParmaDetallePedido> carrito) {
 		this.carrito = carrito;
 	}
+
+	
 
 	public ManagerClientes getmClientes() {
 		return mClientes;
